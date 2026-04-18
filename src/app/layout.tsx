@@ -40,7 +40,7 @@ export default function RootLayout({
             <div className="w-40 border-r border-gray-50/25 mr-2">
               <SideBar />
             </div>
-            <div className="flex-4">
+            <div>
               {children}
               <div className="pl-4 mt-4">
                 <Instructions />

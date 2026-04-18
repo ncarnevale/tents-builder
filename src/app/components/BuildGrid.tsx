@@ -267,7 +267,7 @@ function BuildGrid({ width, height }: TypeBuildGridProps) {
   return (
     <div className="max-w-xl flex flex-col items-center m-auto">
       <GridToolBar>
-        <div className="flex flex-between justify-between w-full">
+        <div className="flex justify-between w-full">
           <div className="flex gap-2">
             <button
               className="cursor-pointer text-sm font-medium bg-blue-500/10 hover:bg-blue-700 text-white py-2 px-4 rounded disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-blue-500/10"
@@ -322,7 +322,7 @@ function BuildGrid({ width, height }: TypeBuildGridProps) {
       />
       <SuccessModal
         isOpen={isSuccessModalOpen}
-        link={`${window.location.origin}/play/${submittedId}`}
+        link={`/play/${submittedId}`}
         onClose={handleSuccessModalClose}
       />
     </div>

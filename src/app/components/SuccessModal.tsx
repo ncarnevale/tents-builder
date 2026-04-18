@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "./Modal";
 
 type TypeSuccessModalProps = {
@@ -11,6 +11,11 @@ type TypeSuccessModalProps = {
 
 export function SuccessModal({ isOpen, onClose, link }: TypeSuccessModalProps) {
   const [copied, setCopied] = useState(false);
+  const [fullUrl, setFullUrl] = useState(link);
+
+  useEffect(() => {
+    setFullUrl(`${window.location.origin}/link`);
+  });
 
   const handleCopy = async () => {
     try {
@@ -20,7 +25,7 @@ export function SuccessModal({ isOpen, onClose, link }: TypeSuccessModalProps) {
     } catch {
       // fallback
       const el = document.createElement("textarea");
-      el.value = link;
+      el.value = fullUrl;
       document.body.appendChild(el);
       el.select();
       document.execCommand("copy");
@@ -39,6 +44,7 @@ export function SuccessModal({ isOpen, onClose, link }: TypeSuccessModalProps) {
         </p>
         <div className="flex items-center gap-2">
           <div className="flex-1 bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm text-blue-400 truncate select-all">
+            {fullUrl}
             {link}
           </div>
           <button
