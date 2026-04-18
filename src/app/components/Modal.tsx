@@ -1,4 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+"use client";
+
+import { useRef } from "react";
 
 type TypeModalProps = {
   isOpen: boolean;

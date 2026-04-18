@@ -1,4 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import Modal from "./Modal";
 
 type TypeSubmitModalProps = {

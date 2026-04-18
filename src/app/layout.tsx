@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Tents Builder",
+  title: "Tents",
   description: "A player & builder for the tents puzzle game",
 };
 

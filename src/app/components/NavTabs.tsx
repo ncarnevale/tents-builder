@@ -1,9 +1,7 @@
 "use client";
 
-import { type ComponentProps, useEffect, useState } from "react";
-import Link from "next/link";
-import { useParams, usePathname } from "next/navigation";
-import path from "path";
+import { type ComponentProps } from "react";
+import { usePathname } from "next/navigation";
 
 function TabLink(props: ComponentProps<"a">) {
   return (
