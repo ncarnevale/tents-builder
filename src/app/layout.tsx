@@ -37,7 +37,7 @@ export default function RootLayout({
             <NavTabs />
           </div>
           <div className="flex">
-            <div className="w-40 border-r border-gray-50/25 mr-2">
+            <div className="min-w-50 border-r border-gray-50/25 mr-2">
               <SideBar />
             </div>
             <div>

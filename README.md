@@ -2,6 +2,10 @@
 
 "Tents" or "Tents and Trees" is a simple logic puzzle game. This app lets you complete puzzles online, and build your own puzzles to share publicly or privately.
 
+## Live Demo
+
+https://tents-app.vercel.app
+
 ## Tech Stack
 
 - Next.js (App Router)
