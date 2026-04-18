@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+:root {
+  --background: #181e20;
+  --foreground: #d8e4dc;
+  --muted: #4a6b58;
+  --border: #243028;
+  --accent: #4eab72;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Segoe UI", Arial, sans-serif;
+}

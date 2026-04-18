@@ -1,0 +1,19 @@
+export type TypeCoordinates = [number, number][];
+
+export type TypeGrid = {
+  id: string;
+  treeCoordinates: TypeCoordinates;
+  tentCoordinates: TypeCoordinates;
+  author: string;
+  isPublic: boolean;
+};
+
+export type TypePartialGrid = {
+  id: string;
+  author: string;
+  height: number;
+  width: number;
+  createdAt: Date;
+};
+
+export type TypeCell = "" | "." | "tree" | "tent";
