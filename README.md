@@ -4,7 +4,7 @@
 
 ## Live Demo
 
-https://tents-app.vercel.app
+https://tents-builder.vercel.app/
 
 ## Tech Stack
 
