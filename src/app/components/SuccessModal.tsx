@@ -14,12 +14,12 @@ export function SuccessModal({ isOpen, onClose, link }: TypeSuccessModalProps) {
   const [fullUrl, setFullUrl] = useState(link);
 
   useEffect(() => {
-    setFullUrl(`${window.location.origin}/link`);
+    setFullUrl(`${window.location.origin}${link}`);
   });
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(link);
+      await navigator.clipboard.writeText(fullUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
