@@ -20,8 +20,12 @@ function Grid({
   rowTotals,
   onClickCell,
 }: TypeGridProps) {
+  const size = width > 10 || height > 10 ? "large" : "small";
+
   return (
-    <div className="w-full flex flex-col items-center max-w-xl">
+    <div
+      className={`w-full flex flex-col items-center max-w-xl ${size === "large" ? "text-md md:text-xl" : "text-3xl md:text-4xl"} `}
+    >
       <div
         className="grid gap-1 w-full"
         style={{
@@ -75,7 +79,7 @@ function GridCell({ value, onClick }: TypeGridCellProps) {
   return (
     <div
       onClick={onClick}
-      className={`aspect-square w-full flex items-center justify-center border text-3xl ${
+      className={`aspect-square w-full flex items-center justify-center border ${
         isTree ? "cursor-default" : "cursor-pointer"
       }`}
     >
@@ -86,7 +90,7 @@ function GridCell({ value, onClick }: TypeGridCellProps) {
 
 function Cell({ children }: { children: ReactNode }) {
   return (
-    <div className="aspect-square w-full flex items-center justify-center text-3xl">
+    <div className="aspect-square w-full flex items-center justify-center">
       {children}
     </div>
   );

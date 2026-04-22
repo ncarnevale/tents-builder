@@ -19,8 +19,10 @@ export function StartModal({
   onClose,
   onConfirm = () => {},
 }: TypeStartModalProps) {
-  const [width, setWidth] = useState<number | undefined>(DEFAULT_SIZES[0][0]);
-  const [height, setHeight] = useState<number | undefined>(DEFAULT_SIZES[0][1]);
+  const [initialWidth, initialHeight] = DEFAULT_SIZES[0];
+
+  const [width, setWidth] = useState<number | undefined>(initialWidth);
+  const [height, setHeight] = useState<number | undefined>(initialHeight);
   const [isCustom, setIsCustom] = useState<boolean>(false);
 
   const setDimensions = (width: number, height: number) => {
@@ -47,7 +49,7 @@ export function StartModal({
   const onSelectSize = (selectedSize: string) => {
     if (selectedSize === "custom") {
       setIsCustom(true);
-      setDimensions(DEFAULT_SIZES[0][0], DEFAULT_SIZES[0][1]);
+      setDimensions(initialWidth, initialHeight);
     } else {
       setIsCustom(false);
       const dimensions = selectStringToDimensions(selectedSize);
@@ -58,8 +60,7 @@ export function StartModal({
   const handleOnConfirm = () => {
     if (width && height) {
       onConfirm([width, height]);
-      setWidth(undefined);
-      setHeight(undefined);
+      setDimensions(initialWidth, initialHeight);
       setIsCustom(false);
     }
   };

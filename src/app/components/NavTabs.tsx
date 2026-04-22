@@ -19,7 +19,7 @@ function NavTabs() {
   const isBuild = pathname.includes("build");
 
   return (
-    <div className="mb-10">
+    <div>
       <TabLink className={`mx-1 ${isPlay ? "border-b-4" : ""}`} href={"/"}>
         Play
       </TabLink>
