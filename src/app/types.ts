@@ -4,6 +4,8 @@ export type TypeGrid = {
   id: string;
   treeCoordinates: TypeCoordinates;
   tentCoordinates: TypeCoordinates;
+  height: number;
+  width: number;
   author: string;
   isPublic: boolean;
 };
@@ -17,3 +19,5 @@ export type TypePartialGrid = {
 };
 
 export type TypeCell = "" | "." | "tree" | "tent";
+
+export type TypeGridState = TypeCell[][];

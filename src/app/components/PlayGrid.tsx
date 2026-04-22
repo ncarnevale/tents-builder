@@ -3,11 +3,10 @@
 import { useEffect, useState, useMemo } from "react";
 import confetti from "canvas-confetti";
 
-import type { TypeCoordinates, TypeCell } from "../types";
+import type { TypeCoordinates, TypeCell, TypeGridState } from "../types";
 import Grid from "./Grid";
 import GridToolBar from "./GridToolbar";
-
-type TypeGridState = TypeCell[][];
+import { isTent, isTree, isBlank, isDot } from "./helpers/gridHelpers";
 
 type TypeGridProps = {
   width: number;
@@ -63,11 +62,6 @@ function PlayGrid({ width, height, trees, tents }: TypeGridProps) {
     });
   }, [width, height, trees]);
 
-  const isTree = (x: number, y: number) => grid[x][y] === "tree";
-  const isTent = (x: number, y: number) => grid[x][y] === "tent";
-  const isBlank = (x: number, y: number) => grid[x][y] === "";
-  const isDot = (x: number, y: number) => grid[x][y] === ".";
-
   const numberOfTents = grid
     .flatMap((cell) => cell)
     .filter((c) => c === "tent").length;
@@ -75,7 +69,7 @@ function PlayGrid({ width, height, trees, tents }: TypeGridProps) {
   const isWin =
     numberOfTents === tents.length &&
     tents.every(([x, y]) => {
-      return isTent(x, y);
+      return isTent(x, y, grid);
     });
 
   useEffect(() => {
@@ -95,10 +89,10 @@ function PlayGrid({ width, height, trees, tents }: TypeGridProps) {
   }, [tents, width, height]);
 
   const toggleCell = (x: number, y: number) => {
-    if (isTree(x, y)) return;
-    else if (isBlank(x, y)) updateGrid(x, y, ".");
-    else if (isDot(x, y)) updateGrid(x, y, "tent");
-    else if (isTent(x, y)) updateGrid(x, y, "");
+    if (isTree(x, y, grid)) return;
+    else if (isBlank(x, y, grid)) updateGrid(x, y, ".");
+    else if (isDot(x, y, grid)) updateGrid(x, y, "tent");
+    else if (isTent(x, y, grid)) updateGrid(x, y, "");
   };
 
   return (

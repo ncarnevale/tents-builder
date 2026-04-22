@@ -2,23 +2,34 @@
 
 import { useState, useMemo } from "react";
 
-import type { TypeCell, TypeCoordinates } from "../types";
+import type { TypeCell, TypeCoordinates, TypeGridState } from "../types";
 import Grid from "./Grid";
 import SubmitModal from "./SubmitModal";
 import SuccessModal from "./SuccessModal";
 import postGrid from "../services/postGrid";
 import GridToolBar from "./GridToolbar";
 
-import { Undo2, Redo2 } from "lucide-react";
+import {
+  isTent,
+  isTree,
+  isBlank,
+  calculateTotals,
+} from "./helpers/gridHelpers";
 
-type TypeGridState = TypeCell[][];
+import { Undo2, Redo2 } from "lucide-react";
+import validateGrid from "./helpers/validateGrid";
 
 type TypeBuildGridProps = {
   width: number;
   height: number;
+  onNewPuzzleClick?: () => void;
 };
 
-function BuildGrid({ width, height }: TypeBuildGridProps) {
+function BuildGrid({
+  width,
+  height,
+  onNewPuzzleClick = () => {},
+}: TypeBuildGridProps) {
   const [next, setNext] = useState<"tent" | "tree">("tree");
   const [history, setHistory] = useState<TypeGridState[]>([
     Array.from({ length: height }, () =>
@@ -28,9 +39,13 @@ function BuildGrid({ width, height }: TypeBuildGridProps) {
 
   const [historyIndex, setHistoryIndex] = useState<number>(0);
   const [error, setError] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+
   const [submittedId, setSubmittedId] = useState<string | null>(null);
+  const [isCalculating, setIsCalculating] = useState<boolean>(false);
+  const [nodeCount, setNodeCount] = useState<number>(0);
 
   const grid = useMemo(() => history[historyIndex], [history, historyIndex]);
 
@@ -70,33 +85,10 @@ function BuildGrid({ width, height }: TypeBuildGridProps) {
     setError("");
   };
 
-  const isTree = (x: number, y: number, g: TypeGridState = grid) =>
-    g[x][y] === "tree";
-  const isTent = (x: number, y: number, g: TypeGridState = grid) =>
-    g[x][y] === "tent";
-  const isBlank = (x: number, y: number, g: TypeGridState = grid) =>
-    g[x][y] === "";
-  const isDot = (x: number, y: number, g: TypeGridState = grid) =>
-    g[x][y] === ".";
-
-  const calculateTotals = (g: TypeGridState) => {
-    const colTotals = Array.from({ length: g[0]?.length }, () => 0);
-    const rowTotals = Array.from({ length: g.length }, () => 0);
-    g.forEach((rows, x) => {
-      rows.forEach((cell, y) => {
-        if (isTent(x, y, g)) {
-          colTotals[y] += 1;
-          rowTotals[x] += 1;
-        }
-      });
-    });
-    return [colTotals, rowTotals];
-  };
-
   const [colTotals, rowTotals] = useMemo(() => calculateTotals(grid), [grid]);
 
   const toggleCell = (x: number, y: number) => {
-    if (!isBlank(x, y)) return;
+    if (!isBlank(x, y, grid)) return;
     else updateGrid(x, y, next);
     toggleNext();
   };
@@ -106,8 +98,8 @@ function BuildGrid({ width, height }: TypeBuildGridProps) {
     const tentCoordinates: TypeCoordinates = [];
     grid.forEach((rows, x) => {
       rows.forEach((val, y) => {
-        if (isTree(x, y)) treeCoordinates.push([x, y]);
-        else if (isTent(x, y)) tentCoordinates.push([x, y]);
+        if (isTree(x, y, grid)) treeCoordinates.push([x, y]);
+        else if (isTent(x, y, grid)) tentCoordinates.push([x, y]);
       });
     });
 
@@ -126,142 +118,29 @@ function BuildGrid({ width, height }: TypeBuildGridProps) {
     }
   };
 
-  const onSubmit = () => {
-    const error = checkGridForErrors();
+  const onSubmit = async () => {
+    setIsCalculating(true);
+    const error = await validateGrid(grid, (count) => setNodeCount(count));
+    setIsCalculating(false);
     if (error) {
       setError(error);
     } else {
-      setIsModalOpen(true);
+      setIsSubmitModalOpen(true);
     }
   };
 
   const handleModalSave = (name: string, isPublic: boolean) => {
-    setIsModalOpen(false);
+    setIsSubmitModalOpen(false);
     submitGrid(name, isPublic);
   };
 
   const handleModalCancel = () => {
-    setIsModalOpen(false);
+    setIsSubmitModalOpen(false);
   };
 
   const handleSuccessModalClose = () => {
     setIsSuccessModalOpen(false);
     setSubmittedId(null);
-  };
-
-  const checkGridForErrors = () => {
-    const isInGrid = (x: number, y: number): boolean =>
-      x >= 0 && y >= 0 && x < height && y < width;
-
-    const getBorderingCells = (x: number, y: number): TypeCoordinates =>
-      (
-        [
-          [x + 1, y],
-          [x - 1, y],
-          [x, y + 1],
-          [x, y - 1],
-          [x + 1, y + 1],
-          [x + 1, y - 1],
-          [x - 1, y + 1],
-          [x - 1, y - 1],
-        ] as TypeCoordinates
-      ).filter(([cellX, cellY]) => isInGrid(cellX, cellY));
-
-    const getAdjacentCells = (x: number, y: number): TypeCoordinates =>
-      (
-        [
-          [x + 1, y],
-          [x - 1, y],
-          [x, y + 1],
-          [x, y - 1],
-        ] as TypeCoordinates
-      ).filter(([cellX, cellY]) => isInGrid(cellX, cellY));
-
-    let borderingTents = false;
-
-    grid.forEach((rows, x) => {
-      rows.forEach((cell, y) => {
-        if (isTent(x, y)) {
-          getBorderingCells(x, y).forEach(([bx, by]) => {
-            if (isTent(bx, by)) {
-              borderingTents = true;
-            }
-          });
-        }
-      });
-    });
-
-    if (borderingTents) return "Error: some tents are bordering each other!";
-
-    const trees: TypeCoordinates = [];
-    grid.forEach((rows, x) => {
-      rows.forEach((val, y) => {
-        if (isTree(x, y)) trees.push([x, y]);
-      });
-    });
-
-    const gridWithTrees = (): TypeGridState =>
-      Array.from({ length: height }, (_, x) =>
-        Array.from({ length: width }, (_, y) => (isTree(x, y) ? "tree" : "")),
-      );
-
-    const getAdjacentEmptyCells = (
-      x: number,
-      y: number,
-      g: TypeGridState,
-    ): TypeCoordinates =>
-      getAdjacentCells(x, y).filter(([cellX, cellY]) =>
-        isBlank(cellX, cellY, g),
-      );
-
-    const isBorderingPlacedTent = (
-      x: number,
-      y: number,
-      grid: TypeGridState,
-    ): boolean =>
-      getBorderingCells(x, y).some(([cellX, cellY]) =>
-        isTent(cellX, cellY, grid),
-      );
-
-    let solutions: string[] = [];
-
-    const solveNextTree = (
-      treeIndex: number,
-      solveGrid: TypeGridState,
-    ): void => {
-      if (solutions.length > 1) return;
-
-      if (treeIndex === trees.length) {
-        const [solveColTotals, solveRowTotals] = calculateTotals(solveGrid);
-
-        const totalsMatch =
-          rowTotals.every((count, i) => count === solveRowTotals[i]) &&
-          colTotals.every((count, i) => count === solveColTotals[i]);
-        if (totalsMatch && !solutions.includes(JSON.stringify(solveGrid))) {
-          solutions.push(JSON.stringify(solveGrid));
-        }
-        return;
-      }
-
-      const [tx, ty] = trees[treeIndex];
-      const candidates = getAdjacentEmptyCells(tx, ty, solveGrid);
-
-      for (const [cx, cy] of candidates) {
-        if (!isBorderingPlacedTent(cx, cy, solveGrid)) {
-          solveGrid[cx][cy] = "tent";
-          solveNextTree(treeIndex + 1, solveGrid);
-          solveGrid[cx][cy] = "";
-          if (solutions.length > 1) return;
-        }
-      }
-    };
-
-    solveNextTree(0, gridWithTrees());
-
-    if (solutions.length === 0)
-      return "Error: no valid solution exists for this puzzle!";
-    if (solutions.length > 1)
-      return "Error: more than one valid solution exists — the puzzle is ambiguous!";
   };
 
   return (
@@ -285,14 +164,20 @@ function BuildGrid({ width, height }: TypeBuildGridProps) {
             >
               <Redo2 size={16} />
             </button>
-          </div>
-          <div>
             <button
               className="cursor-pointer text-sm font-medium bg-blue-500/10 hover:bg-blue-700 text-white py-2 px-4 rounded disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-blue-500/10"
               onClick={() => clear()}
               disabled={historyIndex <= 0}
             >
               Restart
+            </button>
+          </div>
+          <div>
+            <button
+              className="cursor-pointer text-sm font-medium bg-blue-500/10 hover:bg-blue-700 text-white py-2 px-4 rounded disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-blue-500/10"
+              onClick={() => onNewPuzzleClick()}
+            >
+              New Puzzle
             </button>
           </div>
         </div>
@@ -311,12 +196,14 @@ function BuildGrid({ width, height }: TypeBuildGridProps) {
           disabled={next === "tent" || historyIndex === 0 || !!error}
           onClick={onSubmit}
         >
-          Submit
+          {isCalculating
+            ? `Calculating... (${nodeCount} nodes explored)`
+            : "Submit"}
         </button>
       </GridToolBar>
       {error && <div className="mt-8 text-red-200">{error}</div>}
       <SubmitModal
-        isOpen={isModalOpen}
+        isOpen={isSubmitModalOpen}
         onCancel={handleModalCancel}
         onSave={handleModalSave}
       />

@@ -6,6 +6,8 @@ export default async function (id: string): Promise<TypeGrid> {
   const data = (await resp.json()) as TypeApiGrid;
   return {
     id: data.id,
+    width: data.width,
+    height: data.height,
     treeCoordinates: data.tree_coordinates,
     tentCoordinates: data.tent_coordinates,
     author: data.author || "",

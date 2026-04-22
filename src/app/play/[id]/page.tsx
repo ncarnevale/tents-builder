@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { GRID_HEIGHT, GRID_WIDTH } from "@/app/components/constants";
 import PlayGrid from "@/app/components/PlayGrid";
 import { TypeGrid } from "@/app/types";
 import { useParams } from "next/navigation";
@@ -24,8 +23,8 @@ function PlayPage() {
 
   return (
     <PlayGrid
-      width={GRID_WIDTH}
-      height={GRID_HEIGHT}
+      width={loadedGrid.width}
+      height={loadedGrid.height}
       trees={loadedGrid.treeCoordinates}
       tents={loadedGrid.tentCoordinates}
     />
