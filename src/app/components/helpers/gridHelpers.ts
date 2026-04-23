@@ -13,6 +13,12 @@ export function isDot(x: number, y: number, g: TypeGridState) {
   return g[x][y] === ".";
 }
 
+export function getGridDimensions(
+  grid: TypeGridState,
+): [width: number, height: number] {
+  return [grid[0].length, grid.length];
+}
+
 export function calculateTotals(
   g: TypeGridState,
 ): [colTotals: number[], rowTotals: number[]] {

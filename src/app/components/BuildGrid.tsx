@@ -183,12 +183,11 @@ function BuildGrid({
         </div>
       </GridToolBar>
       <Grid
-        height={height}
-        width={width}
         grid={grid}
         colTotals={colTotals}
         rowTotals={rowTotals}
         onClickCell={toggleCell}
+        nonClickableCellTypes={["tree", "tent"]}
       />
       <GridToolBar>
         <button

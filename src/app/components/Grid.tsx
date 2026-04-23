@@ -3,23 +3,23 @@
 import { Fragment, ReactNode } from "react";
 
 import type { TypeCell } from "../types";
+import { getGridDimensions } from "./helpers/gridHelpers";
 
 type TypeGridProps = {
-  width: number;
-  height: number;
   grid: TypeCell[][];
   colTotals: number[];
   rowTotals: number[];
   onClickCell: (x: number, y: number) => void;
+  nonClickableCellTypes?: TypeCell[];
 };
 function Grid({
-  width,
-  height,
   grid,
   colTotals,
   rowTotals,
   onClickCell,
+  nonClickableCellTypes = [],
 }: TypeGridProps) {
+  const [width, height] = getGridDimensions(grid);
   const size = width > 10 || height > 10 ? "large" : "small";
 
   return (
@@ -48,6 +48,7 @@ function Grid({
                 key={`${x}-${y}`}
                 value={val}
                 onClick={() => onClickCell(x, y)}
+                clickable={!nonClickableCellTypes.includes(val)}
               />
             ))}
           </Fragment>
@@ -59,9 +60,10 @@ function Grid({
 
 type TypeGridCellProps = {
   value: TypeCell;
+  clickable: boolean;
   onClick: () => void;
 };
-function GridCell({ value, onClick }: TypeGridCellProps) {
+function GridCell({ value, onClick, clickable }: TypeGridCellProps) {
   const cellToEmoji = (t: TypeCell) => {
     switch (t) {
       case "tree":
@@ -75,12 +77,11 @@ function GridCell({ value, onClick }: TypeGridCellProps) {
         return "";
     }
   };
-  const isTree = value === "tree";
   return (
     <div
       onClick={onClick}
       className={`aspect-square w-full flex items-center justify-center border ${
-        isTree ? "cursor-default" : "cursor-pointer"
+        clickable ? "cursor-pointer" : "cursor-default"
       }`}
     >
       {cellToEmoji(value)}

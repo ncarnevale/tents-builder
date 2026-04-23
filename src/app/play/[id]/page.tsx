@@ -5,6 +5,8 @@ import PlayGrid from "@/app/components/PlayGrid";
 import { TypeGrid } from "@/app/types";
 import { useParams } from "next/navigation";
 import getGrid from "@/app/services/getGrid";
+import Instructions from "@/app/components/Instructions";
+import PlaceHolderGrid from "@/app/components/PlaceholderGrid";
 
 function PlayPage() {
   const [loadedGrid, setLoadedGrid] = useState<TypeGrid | undefined>(undefined);
@@ -19,15 +21,20 @@ function PlayPage() {
     if (id) loadGrid();
   }, [id]);
 
-  if (!loadedGrid) return <div style={{ height: "630px" }} />;
-
   return (
-    <PlayGrid
-      width={loadedGrid.width}
-      height={loadedGrid.height}
-      trees={loadedGrid.treeCoordinates}
-      tents={loadedGrid.tentCoordinates}
-    />
+    <>
+      {!!loadedGrid ? (
+        <PlayGrid
+          width={loadedGrid.width}
+          height={loadedGrid.height}
+          trees={loadedGrid.treeCoordinates}
+          tents={loadedGrid.tentCoordinates}
+        />
+      ) : (
+        <PlaceHolderGrid />
+      )}
+      <Instructions />
+    </>
   );
 }
 

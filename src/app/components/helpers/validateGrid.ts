@@ -1,5 +1,11 @@
-import { TypeCoordinates, TypeGrid, TypeGridState } from "@/app/types";
-import { calculateTotals, isBlank, isTent, isTree } from "./gridHelpers";
+import { TypeCoordinates, TypeGridState } from "@/app/types";
+import {
+  calculateTotals,
+  isBlank,
+  isTent,
+  isTree,
+  getGridDimensions,
+} from "./gridHelpers";
 
 const isInGrid = (
   x: number,
@@ -7,10 +13,6 @@ const isInGrid = (
   width: number,
   height: number,
 ): boolean => x >= 0 && y >= 0 && x < height && y < width;
-
-const getGridDimensions = (
-  grid: TypeGridState,
-): [width: number, height: number] => [grid[0].length, grid.length];
 
 const getBorderingCells = (
   x: number,

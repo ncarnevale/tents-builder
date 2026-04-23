@@ -99,12 +99,11 @@ function PlayGrid({ width, height, trees, tents }: TypeGridProps) {
     <div className="flex flex-col items-center">
       <GridToolBar />
       <Grid
-        height={height}
-        width={width}
         grid={grid}
         colTotals={colTotals}
         rowTotals={rowTotals}
         onClickCell={toggleCell}
+        nonClickableCellTypes={["tree"]}
       />
       {isWin && (
         <div className="ml-10 mt-12 text-2xl font-bold text-green-500">

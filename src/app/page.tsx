@@ -1,6 +1,7 @@
-// Returns placeholder grid view
 // Will automatically reroute to most recent grid from archive via sidebar
 
+import PlaceHolderGrid from "./components/PlaceholderGrid";
+
 export default function Home() {
-  return <div style={{ height: "630px" }} />;
+  return <PlaceHolderGrid />;
 }

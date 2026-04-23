@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SideBar from "./components/SideBar";
 import NavTabs from "./components/NavTabs";
-import Instructions from "./components/Instructions";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,12 +39,7 @@ export default function RootLayout({
             <div className="md:min-w-50 border-t md:border-t-0 md:border-r border-gray-50/25 pt-4 pl-4 md:pl-0 mt-4 md:mr-2 order-last md:order-first">
               <SideBar />
             </div>
-            <div>
-              {children}
-              <div className="pl-4 pt-4 mt-4 border-gray-50/25">
-                <Instructions />
-              </div>
-            </div>
+            <div>{children}</div>
           </div>
         </main>
       </body>
