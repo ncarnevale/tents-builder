@@ -3,5 +3,5 @@
 import PlaceHolderGrid from "./components/PlaceholderGrid";
 
 export default function Home() {
-  return <PlaceHolderGrid />;
+  return <PlaceHolderGrid showLoader />;
 }

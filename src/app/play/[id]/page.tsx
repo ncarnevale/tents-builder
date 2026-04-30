@@ -31,7 +31,7 @@ function PlayPage() {
           tents={loadedGrid.tentCoordinates}
         />
       ) : (
-        <PlaceHolderGrid />
+        <PlaceHolderGrid showLoader />
       )}
       <Instructions />
     </>

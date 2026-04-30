@@ -9,7 +9,7 @@ import PlaceHolderGrid from "../components/PlaceholderGrid";
 
 const BuildGrid = dynamic(() => import("../components/BuildGrid"), {
   ssr: false,
-  loading: PlaceHolderGrid,
+  loading: () => <PlaceHolderGrid showLoader />,
 });
 
 function BuildPage() {
