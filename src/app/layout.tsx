@@ -41,7 +41,7 @@ export default function RootLayout({
               <div className="md:min-w-50 border-t md:border-t-0 md:border-r border-gray-50/25 pt-4 pl-4 md:pl-0 mt-4 md:mr-2 order-last md:order-first">
                 <SideBar />
               </div>
-              <div>{children}</div>
+              <div className="flex-1">{children}</div>
             </div>
           </main>
         </body>
