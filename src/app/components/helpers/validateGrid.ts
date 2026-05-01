@@ -81,7 +81,7 @@ const sleep = () => new Promise((r) => setTimeout(r, 0));
 const checkForSolutions = async (
   grid: TypeGridState,
   onSetNodeCount?: (n: number) => void,
-) => {
+): Promise<{ solutionCount: number; didTimeout: boolean }> => {
   const [width, height] = getGridDimensions(grid);
   const [colTotals, rowTotals] = calculateTotals(grid);
 
@@ -114,10 +114,18 @@ const checkForSolutions = async (
     );
 
   const areInvalidTrees = (trees: TypeCoordinates, grid: TypeGridState) => {
-    return trees.some(([tx, ty]) => {
-      getAdjacentEmptyCells(tx, ty, grid).some(
+    return trees.some(
+      ([tx, ty]) => {
+      // If a tree is adjacent to a tent it's potentially valid
+      if (getAdjacentCells(tx, ty, width, height).some(
+        ([cx, cy]) => isTent(cx, cy, grid),
+      )) return false;
+
+      const candidates = getAdjacentEmptyCells(tx, ty, grid);
+      const isValid = candidates.some(
         ([cx, cy]) => !isBorderingPlacedTent(cx, cy, grid),
       );
+      return !isValid;
     });
   };
 
@@ -136,15 +144,36 @@ const checkForSolutions = async (
   const solveRowTotals: number[] = new Array(height).fill(0);
   const solveColTotals: number[] = new Array(width).fill(0);
 
-  let solutions: string[] = [];
+  let solutionCount = 0;
   let steps = 0;
+  let didTimeout = false;
+  const maxSteps = 500000;
+
+  const placeTent = (x: number, y: number, solveGrid: TypeGridState): void => {
+    solveGrid[x][y] = "tent";
+    solveRowTotals[x]++;
+    solveColTotals[y]++;
+  };
+
+  const unplaceTent = (
+    x: number,
+    y: number,
+    solveGrid: TypeGridState,
+  ): void => {
+    solveGrid[x][y] = "";
+    solveRowTotals[x]--;
+    solveColTotals[y]--;
+  };
 
   const solveNextTree = async (
     treeIndex: number,
     solveGrid: TypeGridState,
   ): Promise<void> => {
-    if (steps > 1000000) return;
-    if (solutions.length > 1) return;
+    if (steps > maxSteps) {
+      didTimeout = true;
+      return;
+    }
+    if (solutionCount > 1) return;
 
     steps++;
     if (steps % 100 === 0) {
@@ -156,8 +185,8 @@ const checkForSolutions = async (
       const totalsMatch =
         rowTotals.every((count, i) => count === solveRowTotals[i]) &&
         colTotals.every((count, i) => count === solveColTotals[i]);
-      if (totalsMatch && !solutions.includes(JSON.stringify(solveGrid))) {
-        solutions.push(JSON.stringify(solveGrid));
+      if (totalsMatch) {
+        solutionCount++;
       }
       return;
     }
@@ -170,19 +199,16 @@ const checkForSolutions = async (
         !isBorderingPlacedTent(cx, cy, solveGrid) &&
         !isOverTotal(cx, cy, solveRowTotals, solveColTotals)
       ) {
-        solveGrid[cx][cy] = "tent";
-        solveRowTotals[cx]++;
-        solveColTotals[cy]++;
+
+        placeTent(cx, cy, solveGrid);
 
         if (!areInvalidTrees(trees, solveGrid)) {
           await solveNextTree(treeIndex + 1, solveGrid);
         }
 
-        solveRowTotals[cx]--;
-        solveColTotals[cy]--;
-        solveGrid[cx][cy] = "";
+        unplaceTent(cx, cy, solveGrid);
 
-        if (solutions.length > 1) return;
+        if (solutionCount > 1) return;
       }
     }
   };
@@ -191,7 +217,7 @@ const checkForSolutions = async (
 
   onSetNodeCount?.(0);
 
-  return solutions;
+  return { solutionCount, didTimeout };
 };
 
 // Returns error string if error, otherwise undefined
@@ -203,11 +229,17 @@ const validateGrid = async (
     return "Error: some tents are bordering each other!";
   }
 
-  const solutions = await checkForSolutions(grid, onSetNodeCount);
+  const { solutionCount, didTimeout } = await checkForSolutions(
+    grid,
+    onSetNodeCount,
+  );
 
-  if (solutions.length === 0)
+  if (didTimeout) {
+    return "Error: solver timed out while validating this puzzle.";
+  }
+  if (solutionCount === 0)
     return "Error: no valid solution exists for this puzzle!";
-  if (solutions.length > 1)
+  if (solutionCount > 1)
     return "Error: more than one valid solution exists — the puzzle is ambiguous!";
 };
 
