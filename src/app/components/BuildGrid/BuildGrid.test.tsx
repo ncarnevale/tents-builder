@@ -5,7 +5,6 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import BuildGrid from "./BuildGrid";
-import { TypeCell } from "../../types";
 
 vi.mock("../../services/postGrid", () => ({
   default: vi.fn().mockResolvedValue({ error: "mock" }),
@@ -105,5 +104,63 @@ describe("BuildGrid", () => {
       ["🌳", "⛺"],
       ["🌳", ""],
     ]);
+  });
+
+  it("after placing a tree, highlights orthogonal tent candidates and mutes non-candidate blanks", async () => {
+    const user = userEvent.setup();
+    render(<BuildGrid width={3} height={3} />);
+
+    await user.click(cell(1, 1));
+
+    expectVisualPlayGrid([
+      ["", "", ""],
+      ["", "🌳", ""],
+      ["", "", ""],
+    ]);
+
+    expect(cell(0, 0)).toHaveClass("opacity-40", "cursor-not-allowed");
+    expect(cell(1, 0)).toHaveClass("ring-2", "cursor-pointer");
+    expect(cell(1, 0)).not.toHaveClass("opacity-40");
+  });
+
+  it("ignores clicks on blanks that cannot receive the tent this turn", async () => {
+    const user = userEvent.setup();
+    render(<BuildGrid width={3} height={3} />);
+
+    await user.click(cell(1, 1));
+    await user.click(cell(0, 0));
+
+    expectVisualPlayGrid([
+      ["", "", ""],
+      ["", "🌳", ""],
+      ["", "", ""],
+    ]);
+  });
+
+  it("removes tent placement hints after undo and restores them on redo", async () => {
+    const user = userEvent.setup();
+    render(<BuildGrid width={3} height={3} />);
+
+    await user.click(cell(1, 1));
+
+    expect(cell(1, 0)).toHaveClass("ring-2");
+
+    await user.click(screen.getByTitle("Undo"));
+    expect(cell(1, 0)).not.toHaveClass("ring-2");
+    expect(cell(0, 0)).not.toHaveClass("opacity-40");
+
+    await user.click(screen.getByTitle("Redo"));
+    expect(cell(1, 0)).toHaveClass("ring-2");
+    expect(cell(0, 0)).toHaveClass("opacity-40");
+  });
+
+  it("on a lone cell grid, placing a tree yields no orthogonal tent hints", async () => {
+    const user = userEvent.setup();
+    render(<BuildGrid width={1} height={1} />);
+
+    await user.click(cell(0, 0));
+
+    expectVisualPlayGrid([["🌳"]]);
+    expect(cell(0, 0)).not.toHaveClass("ring-2");
   });
 });

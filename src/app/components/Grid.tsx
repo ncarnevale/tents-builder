@@ -1,8 +1,8 @@
 "use client";
 
-import { Fragment, ReactNode } from "react";
+import { Fragment, ReactNode, useMemo } from "react";
 
-import type { TypeCell } from "../types";
+import type { TypeCell, TypeCoordinates } from "../types";
 import { getGridDimensions } from "./helpers/gridHelpers";
 
 type TypeGridProps = {
@@ -10,17 +10,22 @@ type TypeGridProps = {
   colTotals: number[];
   rowTotals: number[];
   onClickCell: (x: number, y: number) => void;
-  nonClickableCellTypes?: TypeCell[];
+  isCellClickable?: (row: number, col: number, cell: TypeCell) => boolean;
+  highlightCells?: TypeCoordinates;
 };
 function Grid({
   grid,
   colTotals,
   rowTotals,
   onClickCell,
-  nonClickableCellTypes = [],
+  isCellClickable = () => true,
+  highlightCells,
 }: TypeGridProps) {
   const [width, height] = getGridDimensions(grid);
   const size = width > 10 || height > 10 ? "large" : "small";
+
+  const isHighlighted = (x: number, y: number) =>
+    highlightCells?.some(([xx, yy]) => xx === x && yy === y);
 
   return (
     <div
@@ -50,7 +55,9 @@ function Grid({
                 col={y}
                 value={val}
                 onClick={() => onClickCell(x, y)}
-                clickable={!nonClickableCellTypes.includes(val)}
+                isClickable={isCellClickable(x, y, val)}
+                isDimmed={val === "" && !isCellClickable(x, y, val)}
+                isHighlighted={isHighlighted(x, y)}
               />
             ))}
           </Fragment>
@@ -64,10 +71,20 @@ type TypeGridCellProps = {
   row: number;
   col: number;
   value: TypeCell;
-  clickable: boolean;
+  isClickable?: boolean;
+  isDimmed?: boolean;
+  isHighlighted?: boolean;
   onClick: () => void;
 };
-function GridCell({ row, col, value, onClick, clickable }: TypeGridCellProps) {
+function GridCell({
+  row,
+  col,
+  value,
+  onClick,
+  isClickable = true,
+  isDimmed = false,
+  isHighlighted = false,
+}: TypeGridCellProps) {
   const cellToEmoji = (t: TypeCell) => {
     switch (t) {
       case "tree":
@@ -81,13 +98,22 @@ function GridCell({ row, col, value, onClick, clickable }: TypeGridCellProps) {
         return "";
     }
   };
+
   return (
     <div
       aria-label={`row ${row + 1}, column ${col + 1}`}
-      onClick={onClick}
-      className={`aspect-square w-full flex items-center justify-center border ${
-        clickable ? "cursor-pointer" : "cursor-default"
-      }`}
+      onClick={() => {
+        if (isClickable) onClick();
+      }}
+      className={[
+        "aspect-square w-full flex items-center justify-center border",
+        isClickable ? "cursor-pointer" : "cursor-default",
+        isHighlighted &&
+          "ring-2 ring-amber-400/80 ring-offset-2 ring-offset-stone-900",
+        isDimmed && "opacity-40 cursor-not-allowed",
+      ]
+        .filter(Boolean)
+        .join(" ")}
     >
       {cellToEmoji(value)}
     </div>

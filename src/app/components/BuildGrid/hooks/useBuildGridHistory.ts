@@ -2,33 +2,49 @@ import { useMemo, useState } from "react";
 
 import type { TypeCell, TypeGridState } from "../../../types";
 
+export type TypeGridSnapshot = {
+  grid: TypeGridState;
+  treeAwaitingTent: [number, number] | null;
+};
+
 export type TypeGridHistory = {
-  history: TypeGridState[];
+  history: TypeGridSnapshot[];
   index: number;
 };
 
+const emptySnapshot = (width: number, height: number): TypeGridSnapshot => ({
+  grid: Array.from({ length: height }, () =>
+    Array.from({ length: width }, () => "" as TypeCell),
+  ),
+  treeAwaitingTent: null,
+});
+
 export function useBuildGridHistory(width: number, height: number) {
   const [gridHistory, setGridHistory] = useState<TypeGridHistory>(() => ({
-    history: [
-      Array.from({ length: height }, () =>
-        Array.from({ length: width }, () => ""),
-      ),
-    ],
+    history: [emptySnapshot(width, height)],
     index: 0,
   }));
 
-  const grid = useMemo(
+  const { grid, treeAwaitingTent } = useMemo(
     () => gridHistory.history[gridHistory.index],
     [gridHistory],
   );
 
   const commitEdit = (x: number, y: number, val: TypeCell) => {
     setGridHistory((prev) => {
-      const prevGrid = prev.history[prev.index];
-      const newGrid = prevGrid.map((row) => [...row]);
+      const prevSnap = prev.history[prev.index];
+      let nextAwaiting = prevSnap.treeAwaitingTent;
+      if (val === "tree") nextAwaiting = [x, y];
+      if (val === "tent") nextAwaiting = null;
+
+      const newGrid = prevSnap.grid.map((row) => [...row]);
       newGrid[x][y] = val;
+
       return {
-        history: [...prev.history.slice(0, prev.index + 1), newGrid],
+        history: [
+          ...prev.history.slice(0, prev.index + 1),
+          { grid: newGrid, treeAwaitingTent: nextAwaiting },
+        ],
         index: prev.index + 1,
       };
     });
@@ -57,6 +73,7 @@ export function useBuildGridHistory(width: number, height: number) {
 
   return {
     grid,
+    treeAwaitingTent,
     gridHistory,
     commitEdit,
     undoHistory,

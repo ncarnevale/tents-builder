@@ -2,13 +2,17 @@
 
 import { useMemo, useState } from "react";
 
-import type { TypeCell } from "../../types";
+import type { TypeCell, TypeCoordinates } from "../../types";
 import Grid from "../Grid";
 import SubmitModal from "../SubmitModal";
 import SuccessModal from "../SuccessModal";
 import GridToolbar from "../GridToolbar";
 
-import { isBlank, calculateTotals } from "../helpers/gridHelpers";
+import {
+  calculateTotals,
+  getAdjacentEmptyCells,
+  isBlank,
+} from "../helpers/gridHelpers";
 
 import { Undo2, Redo2 } from "lucide-react";
 import { useBuildGridHistory } from "./hooks/useBuildGridHistory";
@@ -32,6 +36,7 @@ function BuildGrid({
 
   const {
     grid,
+    treeAwaitingTent,
     gridHistory,
     commitEdit,
     undoHistory,
@@ -106,9 +111,27 @@ function BuildGrid({
 
   const [colTotals, rowTotals] = useMemo(() => calculateTotals(grid), [grid]);
 
+  const tentCandidateCoords = useMemo((): TypeCoordinates => {
+    if (next !== "tent" || treeAwaitingTent === null) return [];
+    return getAdjacentEmptyCells(
+      treeAwaitingTent[0],
+      treeAwaitingTent[1],
+      grid,
+    );
+  }, [next, treeAwaitingTent, grid]);
+
+  const isGridCellClickable = useMemo(
+    () => (x: number, y: number) => {
+      if (!isBlank(x, y, grid)) return false;
+      if (next === "tree") return true;
+      return tentCandidateCoords.some(([tx, ty]) => tx === x && ty === y);
+    },
+    [grid, next, tentCandidateCoords, treeAwaitingTent],
+  );
+
   const toggleCell = (x: number, y: number) => {
-    if (!isBlank(x, y, grid)) return;
-    else updateGrid(x, y, next);
+    if (!isGridCellClickable(x, y)) return;
+    updateGrid(x, y, next);
     toggleNext();
   };
 
@@ -156,7 +179,8 @@ function BuildGrid({
         colTotals={colTotals}
         rowTotals={rowTotals}
         onClickCell={toggleCell}
-        nonClickableCellTypes={["tree", "tent"]}
+        isCellClickable={isGridCellClickable}
+        highlightCells={next === "tent" ? tentCandidateCoords : undefined}
       />
       <GridToolbar>
         <button

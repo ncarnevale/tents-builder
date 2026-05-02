@@ -103,7 +103,7 @@ function PlayGrid({ width, height, trees, tents }: TypeGridProps) {
         colTotals={colTotals}
         rowTotals={rowTotals}
         onClickCell={toggleCell}
-        nonClickableCellTypes={["tree"]}
+        isCellClickable={(_, __, cell) => cell !== "tree"}
       />
       {isWin && (
         <div className="ml-10 mt-12 text-2xl font-bold text-green-500">
