@@ -1,23 +1,18 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 
-import type { TypeCell, TypeCoordinates, TypeGridState } from "../types";
-import Grid from "./Grid";
-import SubmitModal from "./SubmitModal";
-import SuccessModal from "./SuccessModal";
-import postGrid from "../services/postGrid";
-import GridToolBar from "./GridToolbar";
+import type { TypeCell } from "../../types";
+import Grid from "../Grid";
+import SubmitModal from "../SubmitModal";
+import SuccessModal from "../SuccessModal";
+import GridToolbar from "../GridToolbar";
 
-import {
-  isTent,
-  isTree,
-  isBlank,
-  calculateTotals,
-} from "./helpers/gridHelpers";
+import { isBlank, calculateTotals } from "../helpers/gridHelpers";
 
 import { Undo2, Redo2 } from "lucide-react";
-import validateGrid from "./helpers/validateGrid";
+import { useBuildGridHistory } from "./hooks/useBuildGridHistory";
+import { useSubmitPuzzle } from "./hooks/useSubmitPuzzle";
 
 type TypeBuildGridProps = {
   width: number;
@@ -31,33 +26,58 @@ function BuildGrid({
   onNewPuzzleClick = () => {},
 }: TypeBuildGridProps) {
   const [next, setNext] = useState<"tent" | "tree">("tree");
-  const [history, setHistory] = useState<TypeGridState[]>([
-    Array.from({ length: height }, () =>
-      Array.from({ length: width }, () => ""),
-    ),
-  ]);
-
-  const [historyIndex, setHistoryIndex] = useState<number>(0);
-  const [error, setError] = useState("");
-
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-
   const [submittedId, setSubmittedId] = useState<string | null>(null);
-  const [isCalculating, setIsCalculating] = useState<boolean>(false);
-  const [nodeCount, setNodeCount] = useState<number>(0);
 
-  const grid = useMemo(() => history[historyIndex], [history, historyIndex]);
+  const {
+    grid,
+    gridHistory,
+    commitEdit,
+    undoHistory,
+    redoHistory,
+    resetHistory,
+  } = useBuildGridHistory(width, height);
+
+  const {
+    error,
+    setError,
+    isCalculating,
+    nodeCount,
+    validatePuzzle,
+    submitPuzzle,
+  } = useSubmitPuzzle(grid);
+
+  const onSubmit = async () => {
+    if (await validatePuzzle()) {
+      setIsSubmitModalOpen(true);
+    }
+  };
+
+  const handleModalSave = async (name: string, isPublic: boolean) => {
+    const result = await submitPuzzle(name, isPublic);
+    if ("id" in result && result.id) {
+      setIsSubmitModalOpen(false);
+      setSubmittedId(result.id);
+      setIsSuccessModalOpen(true);
+    } else {
+      setError("error" in result ? result.error : "Something went wrong.");
+    }
+  };
+
+  const handleModalCancel = () => {
+    setIsSubmitModalOpen(false);
+    setError("");
+  };
+
+  const handleSuccessModalClose = () => {
+    setIsSuccessModalOpen(false);
+    setSubmittedId(null);
+  };
 
   const updateGrid = (x: number, y: number, val: TypeCell) => {
     setError("");
-    setHistory((prevHistory) => {
-      const prevGrid = prevHistory[historyIndex];
-      const newGrid = [...prevGrid.map((rows) => [...rows])];
-      newGrid[x][y] = val;
-      return [...prevHistory.slice(0, historyIndex + 1), newGrid];
-    });
-    setHistoryIndex((i) => i + 1);
+    commitEdit(x, y, val);
   };
 
   const toggleNext = () => {
@@ -65,22 +85,21 @@ function BuildGrid({
   };
 
   const undo = () => {
-    if (historyIndex < 1) return;
-    setHistoryIndex((i) => i - 1);
+    if (gridHistory.index < 1) return;
+    undoHistory();
     setError("");
     toggleNext();
   };
 
   const redo = () => {
-    if (historyIndex + 1 >= history.length) return;
-    setHistoryIndex((i) => i + 1);
+    if (gridHistory.index + 1 >= gridHistory.history.length) return;
+    redoHistory();
     setError("");
     toggleNext();
   };
 
   const clear = () => {
-    setHistory([history[0]]);
-    setHistoryIndex(0);
+    resetHistory();
     setNext("tree");
     setError("");
   };
@@ -93,66 +112,16 @@ function BuildGrid({
     toggleNext();
   };
 
-  const submitGrid = async (name: string, isPublic: boolean) => {
-    const treeCoordinates: TypeCoordinates = [];
-    const tentCoordinates: TypeCoordinates = [];
-    grid.forEach((rows, x) => {
-      rows.forEach((val, y) => {
-        if (isTree(x, y, grid)) treeCoordinates.push([x, y]);
-        else if (isTent(x, y, grid)) tentCoordinates.push([x, y]);
-      });
-    });
-
-    const { id } = await postGrid({
-      width,
-      height,
-      treeCoordinates,
-      tentCoordinates,
-      author: name,
-      isPublic,
-    });
-
-    if (id) {
-      setSubmittedId(id);
-      setIsSuccessModalOpen(true);
-    }
-  };
-
-  const onSubmit = async () => {
-    setIsCalculating(true);
-    const error = await validateGrid(grid, (count) => setNodeCount(count));
-    setIsCalculating(false);
-    if (error) {
-      setError(error);
-    } else {
-      setIsSubmitModalOpen(true);
-    }
-  };
-
-  const handleModalSave = (name: string, isPublic: boolean) => {
-    setIsSubmitModalOpen(false);
-    submitGrid(name, isPublic);
-  };
-
-  const handleModalCancel = () => {
-    setIsSubmitModalOpen(false);
-  };
-
-  const handleSuccessModalClose = () => {
-    setIsSuccessModalOpen(false);
-    setSubmittedId(null);
-  };
-
   return (
     <div className="max-w-xl flex flex-col items-center m-auto">
-      <GridToolBar>
+      <GridToolbar>
         <div className="flex justify-between w-full">
           <div className="flex gap-2">
             <button
               className="cursor-pointer text-sm font-medium bg-blue-500/10 hover:bg-blue-700 text-white py-2 px-4 rounded disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-blue-500/10"
               onClick={() => undo()}
               title="Undo"
-              disabled={historyIndex <= 0}
+              disabled={gridHistory.index <= 0}
             >
               <Undo2 size={16} />
             </button>
@@ -160,14 +129,14 @@ function BuildGrid({
               className="cursor-pointer text-sm font-medium bg-blue-500/10 hover:bg-blue-700 text-white py-2 px-4 rounded disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-blue-500/10"
               onClick={() => redo()}
               title="Redo"
-              disabled={historyIndex + 1 >= history.length}
+              disabled={gridHistory.index + 1 >= gridHistory.history.length}
             >
               <Redo2 size={16} />
             </button>
             <button
               className="cursor-pointer text-sm font-medium bg-blue-500/10 hover:bg-blue-700 text-white py-2 px-4 rounded disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-blue-500/10"
               onClick={() => clear()}
-              disabled={historyIndex <= 0}
+              disabled={gridHistory.index <= 0}
             >
               Restart
             </button>
@@ -181,7 +150,7 @@ function BuildGrid({
             </button>
           </div>
         </div>
-      </GridToolBar>
+      </GridToolbar>
       <Grid
         grid={grid}
         colTotals={colTotals}
@@ -189,17 +158,17 @@ function BuildGrid({
         onClickCell={toggleCell}
         nonClickableCellTypes={["tree", "tent"]}
       />
-      <GridToolBar>
+      <GridToolbar>
         <button
           className="w-full cursor-pointer mt-6 text-lg font-medium bg-blue-500/10 hover:bg-blue-700 text-white py-2 my-2 px-4 rounded disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-blue-500/10"
-          disabled={next === "tent" || historyIndex === 0 || !!error}
+          disabled={next === "tent" || gridHistory.index === 0 || !!error}
           onClick={onSubmit}
         >
           {isCalculating
             ? `Calculating... (${nodeCount} nodes explored)`
             : "Submit"}
         </button>
-      </GridToolBar>
+      </GridToolbar>
       {error && <div className="mt-8 text-red-200">{error}</div>}
       <SubmitModal
         isOpen={isSubmitModalOpen}

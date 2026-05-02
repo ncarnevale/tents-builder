@@ -46,6 +46,8 @@ function Grid({
             {row.map((val, y) => (
               <GridCell
                 key={`${x}-${y}`}
+                row={x}
+                col={y}
                 value={val}
                 onClick={() => onClickCell(x, y)}
                 clickable={!nonClickableCellTypes.includes(val)}
@@ -59,11 +61,13 @@ function Grid({
 }
 
 type TypeGridCellProps = {
+  row: number;
+  col: number;
   value: TypeCell;
   clickable: boolean;
   onClick: () => void;
 };
-function GridCell({ value, onClick, clickable }: TypeGridCellProps) {
+function GridCell({ row, col, value, onClick, clickable }: TypeGridCellProps) {
   const cellToEmoji = (t: TypeCell) => {
     switch (t) {
       case "tree":
@@ -79,6 +83,7 @@ function GridCell({ value, onClick, clickable }: TypeGridCellProps) {
   };
   return (
     <div
+      aria-label={`row ${row + 1}, column ${col + 1}`}
       onClick={onClick}
       className={`aspect-square w-full flex items-center justify-center border ${
         clickable ? "cursor-pointer" : "cursor-default"

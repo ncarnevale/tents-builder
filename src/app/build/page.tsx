@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import Instructions from "../components/Instructions";
 import PlaceHolderGrid from "../components/PlaceholderGrid";
 
-const BuildGrid = dynamic(() => import("../components/BuildGrid"), {
+const BuildGrid = dynamic(() => import("../components/BuildGrid/BuildGrid"), {
   ssr: false,
   loading: () => <PlaceHolderGrid showLoader />,
 });

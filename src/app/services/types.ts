@@ -9,9 +9,7 @@ export type CreateGridParams = {
   isPublic: boolean;
 };
 
-export type CreateGridResponse = {
-  id: string;
-};
+export type CreateGridResponse = { id: string } | { error: string };
 
 export type TypeApiGrid = {
   id: string;
