@@ -10,7 +10,9 @@ describe("validateGrid", () => {
       const grid = structuredClone(gridFixtures.uniqueValid2x2);
       const onSetNodeCount = vi.fn();
 
-      await expect(validateGrid(grid, onSetNodeCount)).resolves.toBeUndefined();
+      await expect(
+        validateGrid(grid, { onSetNodeCount }),
+      ).resolves.toBeUndefined();
       expect(onSetNodeCount).toHaveBeenLastCalledWith(0);
       expect(grid).toEqual(gridFixtures.uniqueValid2x2);
     });
@@ -168,27 +170,32 @@ describe("validateGrid timeout path", () => {
     vi.resetModules();
 
     // Mock helpers to expand branching and drive step-count timeout.
-    vi.doMock("./gridHelpers", () => ({
-      calculateTotals: (g: TypeGridState) => [
-        new Array(g[0].length).fill(g.length),
-        new Array(g.length).fill(g[0].length),
-      ],
-      isBlank: () => true,
-      isTent: () => false,
-      isTree: (x: number, y: number, g: TypeGridState) => g[x][y] === "tree",
-      getGridDimensions: (grid: TypeGridState) => [grid[0].length, grid.length],
-    }));
+    vi.doMock("./gridHelpers", async (importOriginal) => {
+      const actual = await importOriginal<typeof import("./gridHelpers")>();
+      return {
+        ...actual,
+        calculateTotals: (g: TypeGridState) => [
+          new Array(g[0].length).fill(g.length),
+          new Array(g.length).fill(g[0].length),
+        ],
+        isTent: () => false,
+        isTree: (x: number, y: number, g: TypeGridState) => g[x][y] === "tree",
+      };
+    });
 
     const { default: mockedValidateGrid } = await import("./validateGrid");
     const onSetNodeCount = vi.fn();
 
     const grid = structuredClone(gridFixtures.timeoutStress8x8);
 
-    await expect(mockedValidateGrid(grid, onSetNodeCount)).resolves.toBe(
-      "Error: solver timed out while validating this puzzle.",
-    );
+    await expect(
+      mockedValidateGrid(grid, {
+        onSetNodeCount,
+        maxSolverSteps: 25000,
+        yieldEverySteps: 0,
+      }),
+    ).resolves.toBe("Error: solver timed out while validating this puzzle.");
       expect(onSetNodeCount).toHaveBeenLastCalledWith(0);
     },
-    20000,
   );
 });

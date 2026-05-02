@@ -1,62 +1,21 @@
 import { TypeCoordinates, TypeGridState } from "@/app/types";
 import {
   calculateTotals,
-  isBlank,
+  getAdjacentCells,
+  getAdjacentEmptyCells,
+  getBorderingCells,
+  getGridDimensions,
   isTent,
   isTree,
-  getGridDimensions,
 } from "./gridHelpers";
 
-const isInGrid = (
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-): boolean => x >= 0 && y >= 0 && x < height && y < width;
+const DEFAULT_MAX_SOLVER_STEPS = 500000;
+const DEFAULT_YIELD_EVERY_STEPS = 100;
 
-const getBorderingCells = (
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-): TypeCoordinates =>
-  (
-    [
-      [x + 1, y],
-      [x - 1, y],
-      [x, y + 1],
-      [x, y - 1],
-      [x + 1, y + 1],
-      [x + 1, y - 1],
-      [x - 1, y + 1],
-      [x - 1, y - 1],
-    ] as TypeCoordinates
-  ).filter(([cellX, cellY]) => isInGrid(cellX, cellY, width, height));
-
-const getAdjacentCells = (
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-): TypeCoordinates =>
-  (
-    [
-      [x + 1, y],
-      [x - 1, y],
-      [x, y + 1],
-      [x, y - 1],
-    ] as TypeCoordinates
-  ).filter(([cellX, cellY]) => isInGrid(cellX, cellY, width, height));
-
-const getAdjacentEmptyCells = (
-  x: number,
-  y: number,
-  g: TypeGridState,
-): TypeCoordinates => {
-  const [width, height] = getGridDimensions(g);
-  return getAdjacentCells(x, y, width, height).filter(([cellX, cellY]) =>
-    isBlank(cellX, cellY, g),
-  );
+export type ValidateGridOptions = {
+  maxSolverSteps?: number; // maximum num of steps before timeout
+  yieldEverySteps?: number; // yield to UI every N steps
+  onSetNodeCount?: (n: number) => void; // callback with step count on yield
 };
 
 const hasBorderingTents = (grid: TypeGridState) => {
@@ -80,8 +39,13 @@ const sleep = () => new Promise((r) => setTimeout(r, 0));
 
 const checkForSolutions = async (
   grid: TypeGridState,
-  onSetNodeCount?: (n: number) => void,
+  options: ValidateGridOptions = {},
 ): Promise<{ solutionCount: number; didTimeout: boolean }> => {
+  const {
+    onSetNodeCount,
+    maxSolverSteps = DEFAULT_MAX_SOLVER_STEPS,
+    yieldEverySteps = DEFAULT_YIELD_EVERY_STEPS,
+  } = options;
   const [width, height] = getGridDimensions(grid);
   const [colTotals, rowTotals] = calculateTotals(grid);
 
@@ -147,7 +111,6 @@ const checkForSolutions = async (
   let solutionCount = 0;
   let steps = 0;
   let didTimeout = false;
-  const maxSteps = 500000;
 
   const placeTent = (x: number, y: number, solveGrid: TypeGridState): void => {
     solveGrid[x][y] = "tent";
@@ -169,14 +132,16 @@ const checkForSolutions = async (
     treeIndex: number,
     solveGrid: TypeGridState,
   ): Promise<void> => {
-    if (steps > maxSteps) {
+    if (steps > maxSolverSteps) {
       didTimeout = true;
       return;
     }
     if (solutionCount > 1) return;
 
     steps++;
-    if (steps % 100 === 0) {
+    const shouldYield =
+      yieldEverySteps > 0 && steps % yieldEverySteps === 0;
+    if (shouldYield) {
       await sleep(); // yield to UI
       onSetNodeCount?.(steps);
     }
@@ -223,7 +188,7 @@ const checkForSolutions = async (
 // Returns error string if error, otherwise undefined
 const validateGrid = async (
   grid: TypeGridState,
-  onSetNodeCount?: (n: number) => void,
+  options?: ValidateGridOptions,
 ): Promise<string | undefined> => {
   if (hasBorderingTents(grid)) {
     return "Error: some tents are bordering each other!";
@@ -231,7 +196,7 @@ const validateGrid = async (
 
   const { solutionCount, didTimeout } = await checkForSolutions(
     grid,
-    onSetNodeCount,
+    options,
   );
 
   if (didTimeout) {

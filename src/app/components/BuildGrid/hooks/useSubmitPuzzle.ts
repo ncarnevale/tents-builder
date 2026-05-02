@@ -16,9 +16,9 @@ export function useSubmitPuzzle(grid: TypeGridState) {
 
   const validatePuzzle = async (): Promise<boolean> => {
     setIsCalculating(true);
-    const validationError = await validateGrid(grid, (count) =>
-      setNodeCount(count),
-    );
+    const validationError = await validateGrid(grid, {
+      onSetNodeCount: (count) => setNodeCount(count),
+    });
     setIsCalculating(false);
     if (validationError) {
       setError(validationError);
