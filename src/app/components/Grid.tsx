@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, ReactNode, useMemo } from "react";
+import { Fragment, ReactNode } from "react";
 
 import type { TypeCell, TypeCoordinates } from "../types";
 import { getGridDimensions } from "./helpers/gridHelpers";
@@ -106,11 +106,10 @@ function GridCell({
         if (isClickable) onClick();
       }}
       className={[
-        "aspect-square w-full flex items-center justify-center border",
+        "aspect-square w-full flex items-center justify-center rounded-sm border",
         isClickable ? "cursor-pointer" : "cursor-default",
-        isHighlighted &&
-          "ring-2 ring-amber-400/80 ring-offset-2 ring-offset-stone-900",
-        isDimmed && "opacity-40 cursor-not-allowed",
+        isHighlighted && "bg-emerald-500/22",
+        isDimmed && "opacity-[0.58] cursor-not-allowed",
       ]
         .filter(Boolean)
         .join(" ")}
@@ -122,7 +121,7 @@ function GridCell({
 
 function Cell({ children }: { children: ReactNode }) {
   return (
-    <div className="aspect-square w-full flex items-center justify-center">
+    <div className="aspect-square w-full flex items-center justify-center rounded-sm">
       {children}
     </div>
   );

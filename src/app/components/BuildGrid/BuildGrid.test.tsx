@@ -118,9 +118,10 @@ describe("BuildGrid", () => {
       ["", "", ""],
     ]);
 
-    expect(cell(0, 0)).toHaveClass("opacity-40", "cursor-not-allowed");
-    expect(cell(1, 0)).toHaveClass("ring-2", "cursor-pointer");
-    expect(cell(1, 0)).not.toHaveClass("opacity-40");
+    expect(cell(0, 0)).toHaveClass("cursor-not-allowed");
+    expect(cell(0, 0)).toHaveClass("opacity-[0.58]");
+    expect(cell(1, 0)).toHaveClass("bg-emerald-500/22", "cursor-pointer");
+    expect(cell(1, 0)).not.toHaveClass("opacity-[0.58]");
   });
 
   it("ignores clicks on blanks that cannot receive the tent this turn", async () => {
@@ -143,15 +144,15 @@ describe("BuildGrid", () => {
 
     await user.click(cell(1, 1));
 
-    expect(cell(1, 0)).toHaveClass("ring-2");
+    expect(cell(1, 0)).toHaveClass("bg-emerald-500/22");
 
     await user.click(screen.getByTitle("Undo"));
-    expect(cell(1, 0)).not.toHaveClass("ring-2");
-    expect(cell(0, 0)).not.toHaveClass("opacity-40");
+    expect(cell(1, 0)).not.toHaveClass("bg-emerald-500/22");
+    expect(cell(0, 0)).not.toHaveClass("opacity-[0.58]");
 
     await user.click(screen.getByTitle("Redo"));
-    expect(cell(1, 0)).toHaveClass("ring-2");
-    expect(cell(0, 0)).toHaveClass("opacity-40");
+    expect(cell(1, 0)).toHaveClass("bg-emerald-500/22");
+    expect(cell(0, 0)).toHaveClass("opacity-[0.58]");
   });
 
   it("on a lone cell grid, placing a tree yields no orthogonal tent hints", async () => {
@@ -161,6 +162,6 @@ describe("BuildGrid", () => {
     await user.click(cell(0, 0));
 
     expectVisualPlayGrid([["🌳"]]);
-    expect(cell(0, 0)).not.toHaveClass("ring-2");
+    expect(cell(0, 0)).not.toHaveClass("bg-emerald-500/22");
   });
 });
