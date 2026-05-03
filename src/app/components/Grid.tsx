@@ -107,7 +107,7 @@ function GridCell({
       }}
       className={[
         "aspect-square w-full flex items-center justify-center rounded-sm border",
-        isClickable ? "cursor-pointer" : "cursor-default",
+        isClickable ? "cursor-pointer hover:bg-emerald-500/11" : "cursor-default",
         isHighlighted && "bg-emerald-500/22",
         isDimmed && "opacity-[0.58] cursor-not-allowed",
       ]
