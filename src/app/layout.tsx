@@ -15,9 +15,31 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl = "https://tentsandtrees.cool";
+
 export const metadata: Metadata = {
-  title: "Tents",
-  description: "A player & builder for the tents puzzle game",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "Tents and Trees: Play & Build",
+    template: "%s | Tents and Trees",
+  },
+  description:
+    "Play and build Tents aka Tents and Trees logic puzzles online. Try a puzzle from the archive or design your own grid and share it to the archive or privately with a friend.",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: siteUrl,
+    siteName: "Tents and Trees",
+    title: "Tents and Trees: play & build logic puzzles",
+    description:
+      "Play and build Tents and Trees logic puzzles in your browser at tentsandtrees.cool.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Tents and Trees: play & build logic puzzles",
+    description:
+      "Play and build Tents and Trees logic puzzles in your browser at tentsandtrees.cool.",
+  },
 };
 
 export default function RootLayout({
