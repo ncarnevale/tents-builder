@@ -25,18 +25,18 @@ describe("PlayGrid", () => {
     expect(cell(0, 0).textContent).toBe("");
   });
 
-  it("cycles a blank cell through dot, tent, and blank on repeated clicks", async () => {
+  it("cycles a blank cell through tent, dot, and blank on repeated clicks", async () => {
     const user = userEvent.setup();
     render(<PlayGrid width={2} height={2} trees={[]} tents={[[0, 1]]} />);
 
     const c = cell(0, 0);
     await user.click(c);
-    expect(c.textContent).toBe("●");
-    await user.click(c);
     expect(c.textContent).toBe("⛺");
+    await user.click(c);
+    expect(c.textContent).toBe("●");
     await user.click(c);
     expect(c.textContent).toBe("");
     await user.click(c);
-    expect(c.textContent).toBe("●");
+    expect(c.textContent).toBe("⛺");
   });
 });
