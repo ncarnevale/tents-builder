@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { TypeGridState } from "@/app/types";
 
 import {
+  cellBordersTent,
   cloneGrid,
   getAdjacentCells,
   getAdjacentEmptyCells,
@@ -70,6 +71,32 @@ describe("getAdjacentEmptyCells", () => {
       ["tree", "tree"],
     );
     expect(getAdjacentEmptyCells(0, 0, g)).toEqual([]);
+  });
+});
+
+describe("cellBordersTent", () => {
+  const gridFromRows = (...rows: string[][]): TypeGridState =>
+    rows.map((row) => [...row] as TypeGridState[number]);
+
+  it("is true when an eight-neighbor cell is a tent", () => {
+    const g = gridFromRows(
+      ["", "tent", ""],
+      ["", "", ""],
+      ["", "", ""],
+    );
+    expect(cellBordersTent(1, 1, g)).toBe(true);
+    expect(cellBordersTent(0, 0, g)).toBe(true);
+    expect(cellBordersTent(0, 2, g)).toBe(true);
+  });
+
+  it("is false when no neighbor is a tent", () => {
+    const g = gridFromRows(
+      ["", "", ""],
+      ["", "tree", ""],
+      ["", "", ""],
+    );
+    expect(cellBordersTent(0, 0, g)).toBe(false);
+    expect(cellBordersTent(2, 2, g)).toBe(false);
   });
 });
 

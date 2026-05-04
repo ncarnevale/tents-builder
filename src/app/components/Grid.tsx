@@ -12,6 +12,7 @@ type TypeGridProps = {
   onClickCell: (x: number, y: number) => void;
   isCellClickable?: (row: number, col: number, cell: TypeCell) => boolean;
   highlightCells?: TypeCoordinates;
+  softHighlightCells?: TypeCoordinates;
 };
 function Grid({
   grid,
@@ -20,12 +21,16 @@ function Grid({
   onClickCell,
   isCellClickable = () => true,
   highlightCells,
+  softHighlightCells,
 }: TypeGridProps) {
   const [width, height] = getGridDimensions(grid);
   const size = width > 10 || height > 10 ? "large" : "small";
 
   const isHighlighted = (x: number, y: number) =>
     highlightCells?.some(([xx, yy]) => xx === x && yy === y);
+
+  const isSoftHighlighted = (x: number, y: number) =>
+    softHighlightCells?.some(([xx, yy]) => xx === x && yy === y);
 
   return (
     <div
@@ -58,6 +63,7 @@ function Grid({
                 isClickable={isCellClickable(x, y, val)}
                 isDimmed={val === "" && !isCellClickable(x, y, val)}
                 isHighlighted={isHighlighted(x, y)}
+                isSoftHighlighted={isSoftHighlighted(x, y)}
               />
             ))}
           </Fragment>
@@ -74,6 +80,7 @@ type TypeGridCellProps = {
   isClickable?: boolean;
   isDimmed?: boolean;
   isHighlighted?: boolean;
+  isSoftHighlighted?: boolean;
   onClick: () => void;
 };
 function GridCell({
@@ -84,6 +91,7 @@ function GridCell({
   isClickable = true,
   isDimmed = false,
   isHighlighted = false,
+  isSoftHighlighted = false,
 }: TypeGridCellProps) {
   const cellToEmoji = (t: TypeCell) => {
     switch (t) {
@@ -109,6 +117,7 @@ function GridCell({
         "aspect-square w-full flex items-center justify-center rounded-sm border",
         isClickable ? "cursor-pointer hover:bg-emerald-500/11" : "cursor-default",
         isHighlighted && "bg-emerald-500/22",
+        isSoftHighlighted && "bg-emerald-500/10 ring-1 ring-inset ring-emerald-400/20",
         isDimmed && "opacity-[0.58] cursor-not-allowed",
       ]
         .filter(Boolean)

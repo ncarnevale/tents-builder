@@ -82,6 +82,17 @@ export function getAdjacentEmptyCells(
   );
 }
 
+export function cellBordersTent(
+  x: number,
+  y: number,
+  g: TypeGridState,
+): boolean {
+  const [width, height] = getGridDimensions(g);
+  return getBorderingCells(x, y, width, height).some(([cx, cy]) =>
+    isTent(cx, cy, g),
+  );
+}
+
 export function calculateTotals(
   g: TypeGridState,
 ): [colTotals: number[], rowTotals: number[]] {

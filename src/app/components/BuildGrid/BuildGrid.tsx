@@ -11,6 +11,7 @@ import BuildGridStats from "./BuildGridStats";
 
 import {
   calculateTotals,
+  cellBordersTent,
   getAdjacentEmptyCells,
   isBlank,
 } from "../helpers/gridHelpers";
@@ -118,7 +119,7 @@ function BuildGrid({
       treeAwaitingTent[0],
       treeAwaitingTent[1],
       grid,
-    );
+    ).filter(([tx, ty]) => !cellBordersTent(tx, ty, grid));
   }, [next, treeAwaitingTent, grid]);
 
   const isGridCellClickable = useMemo(
@@ -181,6 +182,7 @@ function BuildGrid({
         onClickCell={toggleCell}
         isCellClickable={isGridCellClickable}
         highlightCells={next === "tent" ? tentCandidateCoords : undefined}
+        softHighlightCells={next === "tent" && treeAwaitingTent ? [treeAwaitingTent] : undefined }
       />
       <GridToolbar>
         <button

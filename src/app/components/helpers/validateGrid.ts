@@ -1,6 +1,7 @@
 import { TypeCoordinates, TypeGridState } from "@/app/types";
 import {
   calculateTotals,
+  cellBordersTent,
   getAdjacentCells,
   getAdjacentEmptyCells,
   getBorderingCells,
@@ -18,22 +19,10 @@ export type ValidateGridOptions = {
   onSetNodeCount?: (n: number) => void; // callback with step count on yield
 };
 
-const hasBorderingTents = (grid: TypeGridState) => {
-  const [width, height] = getGridDimensions(grid);
-
-  for (const [x, rows] of grid.entries()) {
-    for (const [y] of rows.entries()) {
-      if (isTent(x, y, grid)) {
-        for (const [bx, by] of getBorderingCells(x, y, width, height)) {
-          if (isTent(bx, by, grid)) {
-            return true;
-          }
-        }
-      }
-    }
-  }
-  return false;
-};
+const hasBorderingTents = (grid: TypeGridState) =>
+  grid.some((rows, x) =>
+    rows.some((_, y) => isTent(x, y, grid) && cellBordersTent(x, y, grid)),
+  );
 
 const sleep = () => new Promise((r) => setTimeout(r, 0));
 
