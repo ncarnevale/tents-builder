@@ -2,17 +2,23 @@ import { useMemo, useState } from "react";
 
 import type { TypeCell, TypeGridState } from "../../../types";
 
-export type TypeGridSnapshot = {
+import { setGridCell } from "../../helpers/gridHelpers";
+import {
+  pushSnapshot,
+  redoSnapshot,
+  resetSnapshotHistory,
+  type TypeSnapshotHistory,
+  undoSnapshot,
+} from "../../hooks/gridSnapshotHistory";
+
+export type TypeBuildGridSnapshot = {
   grid: TypeGridState;
   treeAwaitingTent: [number, number] | null;
 };
 
-export type TypeGridHistory = {
-  history: TypeGridSnapshot[];
-  index: number;
-};
+export type TypeBuildGridHistory = TypeSnapshotHistory<TypeBuildGridSnapshot>;
 
-const emptySnapshot = (width: number, height: number): TypeGridSnapshot => ({
+const emptySnapshot = (width: number, height: number): TypeBuildGridSnapshot => ({
   grid: Array.from({ length: height }, () =>
     Array.from({ length: width }, () => "" as TypeCell),
   ),
@@ -20,7 +26,7 @@ const emptySnapshot = (width: number, height: number): TypeGridSnapshot => ({
 });
 
 export function useBuildGridHistory(width: number, height: number) {
-  const [gridHistory, setGridHistory] = useState<TypeGridHistory>(() => ({
+  const [gridHistory, setGridHistory] = useState<TypeBuildGridHistory>(() => ({
     history: [emptySnapshot(width, height)],
     index: 0,
   }));
@@ -37,38 +43,24 @@ export function useBuildGridHistory(width: number, height: number) {
       if (val === "tree") nextAwaiting = [x, y];
       if (val === "tent") nextAwaiting = null;
 
-      const newGrid = prevSnap.grid.map((row) => [...row]);
-      newGrid[x][y] = val;
-
-      return {
-        history: [
-          ...prev.history.slice(0, prev.index + 1),
-          { grid: newGrid, treeAwaitingTent: nextAwaiting },
-        ],
-        index: prev.index + 1,
-      };
+      const nextGrid = setGridCell(prevSnap.grid, x, y, val);
+      return pushSnapshot(prev, {
+        grid: nextGrid,
+        treeAwaitingTent: nextAwaiting,
+      });
     });
   };
 
   const undoHistory = () => {
-    setGridHistory((prev) => {
-      if (prev.index < 1) return prev;
-      return { ...prev, index: prev.index - 1 };
-    });
+    setGridHistory((prev) => undoSnapshot(prev));
   };
 
   const redoHistory = () => {
-    setGridHistory((prev) => {
-      if (prev.index + 1 >= prev.history.length) return prev;
-      return { ...prev, index: prev.index + 1 };
-    });
+    setGridHistory((prev) => redoSnapshot(prev));
   };
 
   const resetHistory = () => {
-    setGridHistory((prev) => ({
-      history: [prev.history[0]],
-      index: 0,
-    }));
+    setGridHistory((prev) => resetSnapshotHistory(prev));
   };
 
   return {

@@ -1,4 +1,8 @@
-import { TypeCoordinates, TypeGridState } from "@/app/types";
+import type { TypeCell, TypeCoordinates, TypeGridState } from "@/app/types";
+
+export function cloneGrid(grid: TypeGridState): TypeGridState {
+  return grid.map((row) => [...row]);
+}
 
 export function isTree(x: number, y: number, g: TypeGridState) {
   return g[x][y] === "tree";
@@ -92,4 +96,15 @@ export function calculateTotals(
     });
   });
   return [colTotals, rowTotals];
+}
+
+export function setGridCell(
+  grid: TypeGridState,
+  x: number,
+  y: number,
+  val: TypeCell,
+): TypeGridState {
+  const next = cloneGrid(grid);
+  next[x][y] = val;
+  return next;
 }

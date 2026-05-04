@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import confetti from "canvas-confetti";
+import { Redo2, Undo2 } from "lucide-react";
 
-import type { TypeCoordinates, TypeCell, TypeGridState } from "../types";
+import type { TypeCoordinates, TypeGridState } from "../types";
 import Grid from "./Grid";
 import GridToolBar from "./GridToolbar";
+import { useGridHistory } from "./hooks/useGridHistory";
 import { isTent, isTree, isBlank, isDot } from "./helpers/gridHelpers";
 
 type TypeGridProps = {
@@ -44,23 +46,32 @@ const fireConfetti = () => {
 const emptyGrid = (width: number, height: number): TypeGridState =>
   Array.from({ length: height }, () => Array.from({ length: width }, () => ""));
 
+function initGrid(
+  width: number,
+  height: number,
+  trees: TypeCoordinates,
+): TypeGridState {
+  const grid = emptyGrid(width, height);
+  trees.forEach(([x, y]) => {
+    grid[x][y] = "tree";
+  });
+  return grid;
+}
+
 function PlayGrid({ width, height, trees, tents }: TypeGridProps) {
-  const [grid, setGrid] = useState<TypeGridState>(emptyGrid(width, height));
+  const initialGrid = useMemo(
+    () => initGrid(width, height, trees),
+    [width, height, trees],
+  );
 
-  const updateGrid = (x: number, y: number, val: TypeCell) => {
-    setGrid((prevGrid) => {
-      const newGrid = [...prevGrid.map((rows) => [...rows])];
-      newGrid[x][y] = val;
-      return newGrid;
-    });
-  };
-
-  useEffect(() => {
-    setGrid(emptyGrid(width, height));
-    trees.forEach(([x, y]) => {
-      updateGrid(x, y, "tree");
-    });
-  }, [width, height, trees]);
+  const {
+    grid,
+    gridHistory,
+    commitEdit,
+    undoHistory,
+    redoHistory,
+    resetHistory,
+  } = useGridHistory(initialGrid);
 
   const numberOfTents = grid
     .flatMap((cell) => cell)
@@ -90,14 +101,40 @@ function PlayGrid({ width, height, trees, tents }: TypeGridProps) {
 
   const toggleCell = (x: number, y: number) => {
     if (isTree(x, y, grid)) return;
-    else if (isBlank(x, y, grid)) updateGrid(x, y, "tent"); // blank -> tent
-    else if (isTent(x, y, grid)) updateGrid(x, y, "."); // tent -> dot
-    else if (isDot(x, y, grid)) updateGrid(x, y, ""); // dot -> blank
+    else if (isBlank(x, y, grid)) commitEdit(x, y, "tent");
+    else if (isTent(x, y, grid)) commitEdit(x, y, ".");
+    else if (isDot(x, y, grid)) commitEdit(x, y, "");
   };
 
   return (
-    <div className="flex flex-col items-center">
-      <GridToolBar />
+    <div className="max-w-xl flex flex-col items-center m-auto">
+      <GridToolBar>
+        <div className="flex gap-2">
+          <button
+            className="cursor-pointer text-sm font-medium bg-blue-500/10 hover:bg-blue-700 text-white py-2 px-4 rounded disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-blue-500/10"
+            onClick={() => undoHistory()}
+            title="Undo"
+            disabled={gridHistory.index <= 0}
+          >
+            <Undo2 size={16} />
+          </button>
+          <button
+            className="cursor-pointer text-sm font-medium bg-blue-500/10 hover:bg-blue-700 text-white py-2 px-4 rounded disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-blue-500/10"
+            onClick={() => redoHistory()}
+            title="Redo"
+            disabled={gridHistory.index + 1 >= gridHistory.history.length}
+          >
+            <Redo2 size={16} />
+          </button>
+          <button
+            className="cursor-pointer text-sm font-medium bg-blue-500/10 hover:bg-blue-700 text-white py-2 px-4 rounded disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-blue-500/10"
+            onClick={() => resetHistory()}
+            disabled={gridHistory.index <= 0}
+          >
+            Restart
+          </button>
+        </div>
+      </GridToolBar>
       <Grid
         grid={grid}
         colTotals={colTotals}

@@ -39,4 +39,15 @@ describe("PlayGrid", () => {
     await user.click(c);
     expect(c.textContent).toBe("⛺");
   });
+
+  it("undo restores cell after a play edit", async () => {
+    const user = userEvent.setup();
+    render(<PlayGrid width={2} height={2} trees={[]} tents={[[0, 1]]} />);
+
+    const c = cell(0, 0);
+    await user.click(c);
+    expect(c.textContent).toBe("⛺");
+    await user.click(screen.getByTitle("Undo"));
+    expect(c.textContent).toBe("");
+  });
 });
