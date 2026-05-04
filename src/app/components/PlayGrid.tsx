@@ -90,8 +90,8 @@ function PlayGrid({ width, height, trees, tents }: TypeGridProps) {
 
   const toggleCell = (x: number, y: number) => {
     if (isTree(x, y, grid)) return;
-    else if (isBlank(x, y, grid)) updateGrid(x, y, ".");
     else if (isDot(x, y, grid)) updateGrid(x, y, "tent");
+    else if (isBlank(x, y, grid)) updateGrid(x, y, ".");
     else if (isTent(x, y, grid)) updateGrid(x, y, "");
   };
 
