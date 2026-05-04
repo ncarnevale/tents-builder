@@ -7,6 +7,7 @@ import Grid from "../Grid";
 import SubmitModal from "../SubmitModal";
 import SuccessModal from "../SuccessModal";
 import GridToolbar from "../GridToolbar";
+import BuildGridStats from "./BuildGridStats";
 
 import {
   calculateTotals,
@@ -126,7 +127,7 @@ function BuildGrid({
       if (next === "tree") return true;
       return tentCandidateCoords.some(([tx, ty]) => tx === x && ty === y);
     },
-    [grid, next, tentCandidateCoords, treeAwaitingTent],
+    [grid, next, tentCandidateCoords],
   );
 
   const toggleCell = (x: number, y: number) => {
@@ -136,9 +137,9 @@ function BuildGrid({
   };
 
   return (
-    <div className="max-w-xl flex flex-col items-center m-auto">
+    <div className="max-w-xl w-full flex flex-col items-center m-auto">
       <GridToolbar>
-        <div className="flex justify-between w-full">
+        <div className="flex justify-between items-center w-full">
           <div className="flex gap-2">
             <button
               className="cursor-pointer text-sm font-medium bg-blue-500/10 hover:bg-blue-700 text-white py-2 px-4 rounded disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-blue-500/10"
@@ -164,14 +165,13 @@ function BuildGrid({
               Restart
             </button>
           </div>
-          <div>
-            <button
-              className="cursor-pointer text-sm font-medium bg-blue-500/10 hover:bg-blue-700 text-white py-2 px-4 rounded disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-blue-500/10"
-              onClick={() => onNewPuzzleClick()}
-            >
-              New Puzzle
-            </button>
-          </div>
+          <BuildGridStats grid={grid} />
+          <button
+            className="cursor-pointer text-sm font-medium bg-blue-500/10 hover:bg-blue-700 text-white py-2 px-4 rounded disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-blue-500/10"
+            onClick={() => onNewPuzzleClick()}
+          >
+            New Puzzle
+          </button>
         </div>
       </GridToolbar>
       <Grid

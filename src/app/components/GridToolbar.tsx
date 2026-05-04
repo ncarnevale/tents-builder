@@ -2,9 +2,17 @@
 
 import { ReactNode } from "react";
 
-type TypeGridToolBarProps = { children?: ReactNode };
-function GridToolBar({ children = null }: TypeGridToolBarProps) {
-  return <div className="mb-4 px-4 w-full h-10">{children}</div>;
+type TypeGridToolBarProps = {
+  children?: ReactNode;
+  className?: string;
+};
+
+function GridToolBar({ children = null, className = "" }: TypeGridToolBarProps) {
+  return (
+    <div className={`mb-4 px-4 w-full h-10 ${className}`}>
+      {children}
+    </div>
+  );
 }
 
 export default GridToolBar;
