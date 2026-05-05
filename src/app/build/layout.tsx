@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Tents and Trees Puzzle Builder",
+  title: "Build",
   description:
     "Create Tents and Trees puzzles in your browser: place trees and tents, validate with built-in rules, then share a play link. Free logic-puzzle builder at tentsandtrees.cool.",
   alternates: {

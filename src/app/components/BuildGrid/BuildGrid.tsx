@@ -143,7 +143,8 @@ function BuildGrid({
         <div className="flex justify-between items-center w-full">
           <div className="flex gap-2">
             <button
-              className="cursor-pointer text-sm font-medium bg-blue-500/10 hover:bg-blue-700 text-white py-2 px-4 rounded disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-blue-500/10"
+              type="button"
+              className="btn-primary text-sm py-2 px-4"
               onClick={() => undo()}
               title="Undo"
               disabled={gridHistory.index <= 0}
@@ -151,7 +152,8 @@ function BuildGrid({
               <Undo2 size={16} />
             </button>
             <button
-              className="cursor-pointer text-sm font-medium bg-blue-500/10 hover:bg-blue-700 text-white py-2 px-4 rounded disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-blue-500/10"
+              type="button"
+              className="btn-primary text-sm py-2 px-4"
               onClick={() => redo()}
               title="Redo"
               disabled={gridHistory.index + 1 >= gridHistory.history.length}
@@ -159,7 +161,8 @@ function BuildGrid({
               <Redo2 size={16} />
             </button>
             <button
-              className="cursor-pointer text-sm font-medium bg-blue-500/10 hover:bg-blue-700 text-white py-2 px-4 rounded disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-blue-500/10"
+              type="button"
+              className="btn-primary text-sm py-2 px-4"
               onClick={() => clear()}
               disabled={gridHistory.index <= 0}
             >
@@ -168,7 +171,8 @@ function BuildGrid({
           </div>
           <BuildGridStats grid={grid} />
           <button
-            className="cursor-pointer text-sm font-medium bg-blue-500/10 hover:bg-blue-700 text-white py-2 px-4 rounded disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-blue-500/10"
+            type="button"
+            className="btn-primary text-sm py-2 px-4"
             onClick={() => onNewPuzzleClick()}
           >
             New Puzzle
@@ -186,7 +190,8 @@ function BuildGrid({
       />
       <GridToolbar>
         <button
-          className="w-full cursor-pointer mt-6 text-lg font-medium bg-blue-500/10 hover:bg-blue-700 text-white py-2 my-2 px-4 rounded disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-blue-500/10"
+          type="button"
+          className="btn-primary w-full mt-6 text-lg py-2 my-2 px-4"
           disabled={next === "tent" || gridHistory.index === 0 || !!error}
           onClick={onSubmit}
         >
@@ -195,7 +200,7 @@ function BuildGrid({
             : "Submit"}
         </button>
       </GridToolbar>
-      {error && <div className="mt-8 text-red-200">{error}</div>}
+      {error && <div className="mt-8 text-red-400">{error}</div>}
       <SubmitModal
         isOpen={isSubmitModalOpen}
         onCancel={handleModalCancel}

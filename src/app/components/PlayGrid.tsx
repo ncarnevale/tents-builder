@@ -111,7 +111,8 @@ function PlayGrid({ width, height, trees, tents }: TypeGridProps) {
       <GridToolBar>
         <div className="flex gap-2">
           <button
-            className="cursor-pointer text-sm font-medium bg-blue-500/10 hover:bg-blue-700 text-white py-2 px-4 rounded disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-blue-500/10"
+            type="button"
+            className="btn-primary text-sm py-2 px-4"
             onClick={() => undoHistory()}
             title="Undo"
             disabled={gridHistory.index <= 0}
@@ -119,7 +120,8 @@ function PlayGrid({ width, height, trees, tents }: TypeGridProps) {
             <Undo2 size={16} />
           </button>
           <button
-            className="cursor-pointer text-sm font-medium bg-blue-500/10 hover:bg-blue-700 text-white py-2 px-4 rounded disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-blue-500/10"
+            type="button"
+            className="btn-primary text-sm py-2 px-4"
             onClick={() => redoHistory()}
             title="Redo"
             disabled={gridHistory.index + 1 >= gridHistory.history.length}
@@ -127,7 +129,8 @@ function PlayGrid({ width, height, trees, tents }: TypeGridProps) {
             <Redo2 size={16} />
           </button>
           <button
-            className="cursor-pointer text-sm font-medium bg-blue-500/10 hover:bg-blue-700 text-white py-2 px-4 rounded disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-blue-500/10"
+            type="button"
+            className="btn-primary text-sm py-2 px-4"
             onClick={() => resetHistory()}
             disabled={gridHistory.index <= 0}
           >
@@ -143,7 +146,7 @@ function PlayGrid({ width, height, trees, tents }: TypeGridProps) {
         isCellClickable={(_, __, cell) => cell !== "tree"}
       />
       {isWin && (
-        <div className="ml-10 mt-12 text-2xl font-bold text-green-500">
+        <div className="ml-10 mt-12 text-2xl font-bold text-tertiary saturate-250">
           🎉 Nicely done! 🎉
         </div>
       )}

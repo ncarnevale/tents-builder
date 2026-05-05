@@ -41,10 +41,10 @@ function BuildGridStats({ grid }: TypeBuildGridStatsProps) {
         <div className="flex flex-wrap items-baseline justify-center gap-x-4 gap-y-1.5 text-[13px] leading-snug tabular-nums tracking-normal sm:justify-start">
           {rows.map(({ label, value }) => (
             <span key={label} className="inline-flex items-baseline gap-1">
-              <span className="text-white/58 font-medium text-[11px] sm:text-xs">
+              <span className="text-[11px] font-medium text-secondary/65 sm:text-xs">
                 {label}:
               </span>
-              <span className="text-white/[0.88]">{value}</span>
+              <span className="text-secondary">{value}</span>
             </span>
           ))}
         </div>

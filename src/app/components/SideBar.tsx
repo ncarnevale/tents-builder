@@ -10,7 +10,7 @@ function ArchiveLink(props: ComponentProps<typeof Link>) {
   return (
     <Link
       {...props}
-      className={`cursor-pointer text-xs font-medium hover:text-blue-700 text-white my-2 ${props.className}`}
+      className={`my-2 cursor-pointer text-xs font-medium hover:text-tertiary ${props.className}`}
     />
   );
 }
@@ -58,7 +58,7 @@ function SideBar() {
         <div key={id}>
           <ArchiveLink
             href={`/play/${id}`}
-            className={`${id === selectedGridId ? "border-b-2" : ""}`}
+            className={`${id === selectedGridId ? "border-b-1" : ""}`}
           >
             {formatGridLabel(createdAt, author)}
           </ArchiveLink>

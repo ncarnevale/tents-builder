@@ -39,7 +39,7 @@ export function SubmitModal({
       <div className="px-6 py-4 flex flex-col gap-4">
         <div className="flex flex-col gap-1">
           <label
-            className="text-sm text-gray-300 font-medium"
+            className="text-sm font-medium"
             htmlFor="puzzle-author-name"
           >
             Name <span className="text-red-400">*</span>
@@ -54,15 +54,15 @@ export function SubmitModal({
                 setNameError(false);
               }
             }}
-            className={`bg-gray-800 text-white rounded px-3 py-2 text-sm border focus:outline-none ${
+            className={`rounded border bg-primary px-3 py-2 text-sm text-secondary focus:outline-none ${
               nameError
                 ? "border-red-500 focus:border-red-500"
-                : "border-gray-700 focus:border-blue-500"
+                : "border-tertiary focus:border-accent"
             }`}
             placeholder="Your name"
           />
           {nameError && (
-            <p className="text-red-400 text-xs mt-1">Name is required.</p>
+            <p className="mt-1 text-xs text-red-400">Name is required.</p>
           )}
         </div>
         <div className="flex items-center gap-2">
@@ -71,26 +71,28 @@ export function SubmitModal({
             type="checkbox"
             checked={isPublic}
             onChange={(e) => setIsPublic(e.target.checked)}
-            className="w-4 h-4 accent-blue-500 cursor-pointer"
+            className="accent-tertiary h-4 w-4 cursor-pointer"
           />
           <label
             htmlFor="puzzle-is-public"
-            className="text-sm text-gray-300 font-medium cursor-pointer select-none"
+            className="text-sm font-medium cursor-pointer select-none"
           >
             Make public
           </label>
         </div>
       </div>
-      <div className="px-6 py-4 border-t border-gray-700 flex justify-end gap-3">
+      <div className="flex justify-end gap-3 border-t border-tertiary px-6 py-4">
         <button
+          type="button"
           onClick={onCancel}
-          className="cursor-pointer text-sm font-medium bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded"
+          className="btn-secondary text-sm py-2 px-4"
         >
           Cancel
         </button>
         <button
+          type="button"
           onClick={handleSave}
-          className="cursor-pointer text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded"
+          className="btn-primary text-sm py-2 px-4"
         >
           Save
         </button>

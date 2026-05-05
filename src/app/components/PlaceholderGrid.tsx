@@ -24,7 +24,7 @@ export default function PlaceHolderGrid({
     <div className="relative h-[630px]">
       {showSpinner && (
         <div className="absolute inset-0 flex items-center justify-center pb-40">
-          <Loader2 className="h-12 w-12 animate-spin text-gray-400" />
+          <Loader2 className="h-12 w-12 animate-spin text-tertiary/70" />
         </div>
       )}
     </div>

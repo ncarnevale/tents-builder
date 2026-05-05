@@ -1,26 +1,26 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
+import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import SideBar from "./components/SideBar";
 import NavTabs from "./components/NavTabs";
+import { ThemeRoot } from "./components/ThemeRoot";
+import { ThemeToggle } from "./components/ThemeToggle";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  display: "swap",
 });
 
 const siteUrl = "https://tentsandtrees.cool";
 
+const themeInitScript = `(function(){try{var k="tb-theme";var v=localStorage.getItem(k);var d;if(v==="dark")d=!0;else if(v==="light")d=!1;else d=window.matchMedia("(prefers-color-scheme: dark)").matches;document.documentElement.classList.toggle("dark",d)}catch(e){}})();`;
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Tents and Trees: Play & Build",
+    default: "Tents and Trees",
     template: "%s | Tents and Trees",
   },
   description:
@@ -49,23 +49,34 @@ export default function RootLayout({
 }>) {
   return (
     <>
-      <html
-        lang="en"
-        className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-      >
-        <body className="min-h-full flex flex-col">
-          <main className="p-6">
-            <div className="flex justify-between mb-4">
-              <h1 className="text-5xl font-bold">Tents!</h1>
-              <NavTabs />
-            </div>
-            <div className="flex flex-col md:flex-row">
-              <div className="md:min-w-50 border-t md:border-t-0 md:border-r border-gray-50/25 pt-4 pl-4 md:pl-0 mt-4 md:mr-2 order-last md:order-first">
-                <SideBar />
+      <html lang="en" suppressHydrationWarning>
+        <body
+          className={`${inter.className} flex min-h-full flex-col bg-primary text-secondary antialiased`}
+        >
+          <Script
+            id="tb-theme-init"
+            strategy="beforeInteractive"
+            dangerouslySetInnerHTML={{ __html: themeInitScript }}
+          />
+          <ThemeRoot>
+            <main className="p-6">
+              <div className="mb-4 flex items-center justify-between gap-4">
+                <h1 className="text-5xl font-extrabold">Tents</h1>
+                <div className="flex shrink-0 items-center gap-2">
+                  <NavTabs />
+                  <div className="ml-2">
+                    <ThemeToggle />
+                  </div>
+                </div>
               </div>
-              <div className="flex-1">{children}</div>
-            </div>
-          </main>
+              <div className="flex flex-col md:flex-row">
+                <div className="order-last mt-4 border-t border-divider pt-4 pl-4 md:order-first md:mr-2 md:min-w-50 md:border-t-0 md:border-r md:pl-0">
+                  <SideBar />
+                </div>
+                <div className="flex-1">{children}</div>
+              </div>
+            </main>
+          </ThemeRoot>
         </body>
       </html>
       <Analytics />

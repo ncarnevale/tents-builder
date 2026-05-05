@@ -116,9 +116,10 @@ export function StartModal({
         )}
 
         <button
+          type="button"
           onClick={handleOnConfirm}
           disabled={!width || !height}
-          className="cursor: pointer mt-2 bg-blue-500 text-white rounded p-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="btn-primary mt-2 p-2 text-sm"
         >
           Continue
         </button>

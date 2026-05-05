@@ -3,11 +3,15 @@
 import { type ComponentProps } from "react";
 import { usePathname } from "next/navigation";
 
-function TabLink(props: ComponentProps<"a">) {
+type TypeTabLinkProps = ComponentProps<"a"> & {
+  selected?: boolean;
+};
+function TabLink(props: TypeTabLinkProps) {
+  const { className, selected = false, ...rest } = props;
   return (
     <a
-      {...props}
-      className={`cursor-pointer text-sm font-medium bg-blue-500/10 hover:bg-blue-700 text-white py-2 my-2 px-4 rounded ${props.className}`}
+      {...rest}
+      className={`border-0 border-r-0 text-sm py-2 px-4 my-2 ${selected ? "text-tertiary border-b-2 font-bold" : "font-semibold"} ${className ?? ""}`}
     />
   );
 }
@@ -20,10 +24,10 @@ function NavTabs() {
 
   return (
     <div>
-      <TabLink className={`mx-1 ${isPlay ? "border-b-4" : ""}`} href={"/"}>
+      <TabLink selected={isPlay} className="mx-1" href="/">
         Play
       </TabLink>
-      <TabLink className={`mx-1 ${isBuild ? "border-b-4" : ""}`} href="/build">
+      <TabLink selected={isBuild} className="mx-1" href="/build">
         Build
       </TabLink>
     </div>

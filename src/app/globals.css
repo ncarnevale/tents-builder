@@ -1,15 +1,79 @@
 @import "tailwindcss";
 
-:root {
-  --background: #181e20;
-  --foreground: #d8e4dc;
-  --muted: #4a6b58;
-  --border: #243028;
-  --accent: #4eab72;
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary: hsl(40 20% 90%);
+  --color-secondary: hsl(40 40% 10%);
+  --color-tertiary: hsl(100 40% 20%);
+  --color-accent: hsl(340 40% 20%);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: "Segoe UI", Arial, sans-serif;
+@layer theme {
+  .dark {
+    --color-primary: hsl(40 20% 10%);
+    --color-secondary: hsl(40 40% 90%);
+    --color-tertiary: hsl(100 40% 80%);
+    --color-accent: hsl(340 40% 80%);
+  }
+}
+
+
+@layer base {
+  a {
+    color: var(--color-secondary);
+  }
+
+  a:hover {
+    color: var(--color-tertiary);
+  }
+}
+
+@layer components {
+  .btn-primary,
+  .btn-secondary {
+    display: inline-flex;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.25rem;
+    border-style: solid;
+    border-width: 2px;
+    font-weight: 600;
+    text-decoration: none;
+    transition-duration: 150ms;
+    transition-timing-function: ease-in-out;
+    transition-property: filter, opacity, border-color;
+  }
+
+  .btn-primary:disabled,
+  .btn-secondary:disabled {
+    cursor: not-allowed;
+    opacity: 0.3;
+  }
+
+  .btn-primary:not(:disabled):hover {
+    filter: brightness(1.08);
+  }
+
+  .btn-secondary:not(:disabled):hover {
+    filter: brightness(0.96);
+  }
+
+  .btn-primary {
+    background-color: var(--color-tertiary);
+    color: var(--color-primary);
+    border-color: transparent;
+  }
+
+  .btn-secondary {
+    background-color: var(--color-primary);
+    color: var(--color-tertiary);
+    border-color: var(--color-tertiary);
+  }
+
+  .btn-secondary:disabled:hover,
+  .btn-primary:disabled:hover {
+    filter: none;
+  }
 }
