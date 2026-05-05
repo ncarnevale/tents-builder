@@ -9,7 +9,7 @@ type TypeGridToolBarProps = {
 
 function GridToolBar({ children = null, className = "" }: TypeGridToolBarProps) {
   return (
-    <div className={`mb-4 px-4 w-full h-10 ${className}`}>
+    <div className={`mb-4 w-full h-10 ${className}`}>
       {children}
     </div>
   );

@@ -166,7 +166,7 @@ function BuildGrid({
               onClick={() => clear()}
               disabled={gridHistory.index <= 0}
             >
-              Restart
+              Clear
             </button>
           </div>
           <BuildGridStats grid={grid} />
