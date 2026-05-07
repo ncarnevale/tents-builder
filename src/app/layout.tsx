@@ -60,9 +60,10 @@ export default function RootLayout({
           />
           <ThemeRoot>
             <main className="p-6">
-              <div className="mb-4 flex items-center justify-between gap-4">
-                <h1 className="text-5xl font-extrabold">Tents</h1>
-                <div className="flex shrink-0 items-center gap-2">
+              <div className="mb-8 flex items-center justify-between gap-4">
+                <h1 className="min-w-50 text-5xl font-extrabold">Tents</h1>
+                <div className="flex flex-1 justify-between items-center gap-2">
+                  <div />
                   <NavTabs />
                   <div className="ml-2">
                     <ThemeToggle />

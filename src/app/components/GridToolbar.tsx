@@ -4,12 +4,12 @@ import { ReactNode } from "react";
 
 type TypeGridToolBarProps = {
   children?: ReactNode;
-  className?: string;
+  gridWidth: number;
 };
 
-function GridToolBar({ children = null, className = "" }: TypeGridToolBarProps) {
+function GridToolBar({ gridWidth, children = null }: TypeGridToolBarProps) {
   return (
-    <div className={`mb-4 w-full h-10 ${className}`}>
+    <div className={`mb-4 w-full h-10 ${gridWidth}`} style={{ padding: `0 calc(100% / (${gridWidth + 2} * 2))` }}>
       {children}
     </div>
   );

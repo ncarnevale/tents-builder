@@ -25,7 +25,7 @@ describe("BuildGridStats", () => {
 
     expect(
       screen.getByRole("status", {
-        name: "Tents: 0, Trees: 0, Density: 0%",
+        name: "Tents: 0, Density: 0%",
       }),
     ).toBeInTheDocument();
   });
@@ -39,7 +39,7 @@ describe("BuildGridStats", () => {
 
     expect(
       screen.getByRole("status", {
-        name: "Tents: 0, Trees: 1, Density: 0%",
+        name: "Tents: 0, Density: 0%",
       }),
     ).toBeInTheDocument();
 
@@ -50,7 +50,7 @@ describe("BuildGridStats", () => {
     );
     expect(
       screen.getByRole("status", {
-        name: "Tents: 1, Trees: 1, Density: 100%",
+        name: "Tents: 1, Density: 100%",
       }),
     ).toBeInTheDocument();
   });

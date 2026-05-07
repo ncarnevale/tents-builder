@@ -25,11 +25,10 @@ function BuildGridStats({ grid }: TypeBuildGridStatsProps) {
     return { trees, tents, density };
   }, [grid, width, height]);
 
-  const ariaLabel = `Tents: ${tents}, Trees: ${trees}, Density: ${density}%`;
+  const ariaLabel = `Tents: ${tents}, Density: ${density}%`;
 
   const rows = [
     { label: "Tents", value: String(tents) },
-    { label: "Trees", value: String(trees) },
     { label: "Density", value: `${density}%` },
   ] as const;
 
@@ -38,7 +37,7 @@ function BuildGridStats({ grid }: TypeBuildGridStatsProps) {
         role="status"
         aria-label={ariaLabel}
       >
-        <div className="flex flex-wrap items-baseline justify-center gap-x-4 gap-y-1.5 text-[13px] leading-snug tabular-nums tracking-normal sm:justify-start">
+        <div className="flex flex-col items-center gap-x-4 gap-y-1.5 text-[13px] leading-snug tabular-nums tracking-normal">
           {rows.map(({ label, value }) => (
             <span key={label} className="inline-flex items-baseline gap-1">
               <span className="text-[11px] font-medium text-secondary/65 sm:text-xs">

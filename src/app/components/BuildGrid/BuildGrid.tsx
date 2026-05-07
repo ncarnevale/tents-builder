@@ -139,9 +139,9 @@ function BuildGrid({
 
   return (
     <div className="max-w-xl w-full flex flex-col items-center m-auto">
-      <GridToolbar>
+      <GridToolbar gridWidth={width}>
         <div className="flex justify-between items-center w-full">
-          <div className="flex gap-2">
+          <div className="flex flex-1 gap-2">
             <button
               type="button"
               className="btn-primary text-sm py-2 px-4"
@@ -169,13 +169,15 @@ function BuildGrid({
               Clear
             </button>
           </div>
-          <BuildGridStats grid={grid} />
+          <div className="flex flex-1 gap-4 justify-center">
+            <BuildGridStats grid={grid} />
+          </div>
           <button
-            type="button"
-            className="btn-primary text-sm py-2 px-4"
-            onClick={() => onNewPuzzleClick()}
-          >
-            New Puzzle
+              type="button"
+              className="btn-primary flex-1 text-sm py-2 px-4"
+              onClick={() => onNewPuzzleClick()}
+            >
+              New Puzzle
           </button>
         </div>
       </GridToolbar>
@@ -188,7 +190,7 @@ function BuildGrid({
         highlightCells={next === "tent" ? tentCandidateCoords : undefined}
         softHighlightCells={next === "tent" && treeAwaitingTent ? [treeAwaitingTent] : undefined }
       />
-      <GridToolbar>
+      <GridToolbar gridWidth={width}>
         <button
           type="button"
           className="btn-primary w-full mt-6 text-lg py-2 my-2 px-4"

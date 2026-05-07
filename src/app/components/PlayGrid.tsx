@@ -108,7 +108,7 @@ function PlayGrid({ width, height, trees, tents }: TypeGridProps) {
 
   return (
     <div className="max-w-xl flex flex-col items-center m-auto">
-      <GridToolBar>
+      <GridToolBar gridWidth={width}>
         <div className="flex justify-between w-full">
           <div className="flex gap-2">
             <button

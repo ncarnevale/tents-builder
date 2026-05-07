@@ -39,7 +39,9 @@ function Grid({
       <div
         className="grid gap-1 w-full"
         style={{
-          gridTemplateColumns: `repeat(${width + 1}, minmax(0, 1fr))`,
+          // Mirrored spacer column: balances the row-total gutter so the play area sits visually centered.
+          gridTemplateColumns: `repeat(${width + 2}, minmax(0, 1fr))`,
+          
         }}
       >
         <Cell>{""}</Cell>
@@ -48,6 +50,7 @@ function Grid({
             <b>{n}</b>
           </Cell>
         ))}
+        <Cell aria-hidden>{""}</Cell>
         {grid.map((row, x) => (
           <Fragment key={`row-${x}`}>
             <Cell key={`rowTotal-${x}`}>
@@ -66,6 +69,9 @@ function Grid({
                 isSoftHighlighted={isSoftHighlighted(x, y)}
               />
             ))}
+            <Cell key={`rowSpacer-${x}`} aria-hidden>
+              {""}
+            </Cell>
           </Fragment>
         ))}
       </div>
