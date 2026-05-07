@@ -6,6 +6,7 @@ import {
   getAdjacentEmptyCells,
   getBorderingCells,
   getGridDimensions,
+  gridWithOnlyTrees,
   isTent,
   isTree,
 } from "./gridHelpers";
@@ -37,13 +38,6 @@ const checkForSolutions = async (
   } = options;
   const [width, height] = getGridDimensions(grid);
   const [colTotals, rowTotals] = calculateTotals(grid);
-
-  const gridWithTrees = (): TypeGridState =>
-    Array.from({ length: height }, (_, x) =>
-      Array.from({ length: width }, (_, y) =>
-        isTree(x, y, grid) ? "tree" : "",
-      ),
-    );
 
   const trees: TypeCoordinates = [];
   grid.forEach((rows, x) => {
@@ -167,7 +161,7 @@ const checkForSolutions = async (
     }
   };
 
-  await solveNextTree(0, gridWithTrees());
+  await solveNextTree(0, gridWithOnlyTrees(grid));
 
   onSetNodeCount?.(0);
 

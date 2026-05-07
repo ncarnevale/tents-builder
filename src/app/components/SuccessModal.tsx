@@ -7,9 +7,15 @@ type TypeSuccessModalProps = {
   isOpen: boolean;
   onClose: () => void;
   link: string;
+  onPrint: () => void;
 };
 
-export function SuccessModal({ isOpen, onClose, link }: TypeSuccessModalProps) {
+export function SuccessModal({
+  isOpen,
+  onClose,
+  link,
+  onPrint,
+}: TypeSuccessModalProps) {
   const [copied, setCopied] = useState(false);
   const [fullUrl, setFullUrl] = useState(link);
 
@@ -37,15 +43,15 @@ export function SuccessModal({ isOpen, onClose, link }: TypeSuccessModalProps) {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="px-6 py-4 flex flex-col gap-4">
-        <p className="text-sm">
-          Congrats! You've successfully submitted a new puzzle. Copy your link
-          below to share.
-        </p>
-        <div className="flex items-center gap-2">
-          <div className="flex-1 truncate select-all rounded border border-tertiary bg-primary px-3 py-2 text-sm text-tertiary">
+      <div className="px-6 py-4 border-b border-tertiary/20">
+        <h2 className="text-md font-medium">
+          Submission successful! Copy link to share.
+        </h2>
+      </div>
+      <div className="px-6 py-4 flex flex-col gap-4 ">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="min-w-0 flex-1 truncate select-all rounded border border-tertiary bg-primary px-3 py-2 text-xs text-tertiary">
             {fullUrl}
-            {link}
           </div>
           <button
             type="button"
@@ -56,7 +62,14 @@ export function SuccessModal({ isOpen, onClose, link }: TypeSuccessModalProps) {
           </button>
         </div>
       </div>
-      <div className="flex justify-end border-t border-tertiary px-6 py-4">
+      <div className="flex justify-end border-t border-tertiary/20 px-6 py-4">
+        <button
+          type="button"
+          onClick={onPrint}
+          className="btn-primary text-sm py-2 px-3 mr-2 whitespace-nowrap"
+        >
+          Print Puzzle
+        </button>
         <button
           type="button"
           onClick={onClose}

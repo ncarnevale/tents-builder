@@ -13,12 +13,14 @@ import {
   calculateTotals,
   cellBordersTent,
   getAdjacentEmptyCells,
+  gridWithOnlyTrees,
   isBlank,
 } from "../helpers/gridHelpers";
 
 import { Undo2, Redo2 } from "lucide-react";
 import { useBuildGridHistory } from "./hooks/useBuildGridHistory";
 import { useSubmitPuzzle } from "./hooks/useSubmitPuzzle";
+import { usePrint } from "../hooks/usePrint";
 
 type TypeBuildGridProps = {
   width: number;
@@ -31,6 +33,8 @@ function BuildGrid({
   height,
   onNewPuzzleClick = () => {},
 }: TypeBuildGridProps) {
+  const { print, isPrinting } = usePrint();
+
   const [next, setNext] = useState<"tent" | "tree">("tree");
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
@@ -173,22 +177,24 @@ function BuildGrid({
             <BuildGridStats grid={grid} />
           </div>
           <button
-              type="button"
-              className="btn-primary flex-1 text-sm py-2 px-4"
-              onClick={() => onNewPuzzleClick()}
-            >
-              New Puzzle
+            type="button"
+            className="btn-primary flex-1 text-sm py-2 px-4"
+            onClick={() => onNewPuzzleClick()}
+          >
+            New Puzzle
           </button>
         </div>
       </GridToolbar>
       <Grid
-        grid={grid}
+        grid={isPrinting ? gridWithOnlyTrees(grid) : grid}
         colTotals={colTotals}
         rowTotals={rowTotals}
         onClickCell={toggleCell}
         isCellClickable={isGridCellClickable}
         highlightCells={next === "tent" ? tentCandidateCoords : undefined}
-        softHighlightCells={next === "tent" && treeAwaitingTent ? [treeAwaitingTent] : undefined }
+        softHighlightCells={
+          next === "tent" && treeAwaitingTent ? [treeAwaitingTent] : undefined
+        }
       />
       <GridToolbar gridWidth={width}>
         <button
@@ -210,8 +216,9 @@ function BuildGrid({
       />
       <SuccessModal
         isOpen={isSuccessModalOpen}
-        link={`/play/${submittedId}`}
+        link={submittedId ? `/play/${submittedId}` : ""}
         onClose={handleSuccessModalClose}
+        onPrint={() => print()}
       />
     </div>
   );

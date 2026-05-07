@@ -8,6 +8,7 @@ import {
   getAdjacentCells,
   getAdjacentEmptyCells,
   getBorderingCells,
+  gridWithOnlyTrees,
   setGridCell,
 } from "./gridHelpers";
 
@@ -113,6 +114,43 @@ describe("cloneGrid", () => {
 
     copy[0][0] = "tent";
     expect(original[0][0]).toBe("");
+  });
+});
+
+describe("gridWithOnlyTrees", () => {
+  const gridFromRows = (...rows: string[][]): TypeGridState =>
+    rows.map((row) => [...row] as TypeGridState[number]);
+
+  it("preserves trees and blanks everything else", () => {
+    const g = gridFromRows(
+      ["tree", "tent", "."],
+      ["", "tree", "tent"],
+      [".", "", "tree"],
+    );
+    expect(gridWithOnlyTrees(g)).toEqual([
+      ["tree", "", ""],
+      ["", "tree", ""],
+      ["", "", "tree"],
+    ]);
+  });
+
+  it("returns a new grid without mutating the input", () => {
+    const g = gridFromRows(["tree", "tent"]);
+    const out = gridWithOnlyTrees(g);
+    expect(out).not.toBe(g);
+    expect(out[0]).not.toBe(g[0]);
+    expect(g).toEqual([["tree", "tent"]]);
+  });
+
+  it("returns an all-blank grid when there are no trees", () => {
+    const g = gridFromRows(
+      ["tent", "."],
+      ["", "tent"],
+    );
+    expect(gridWithOnlyTrees(g)).toEqual([
+      ["", ""],
+      ["", ""],
+    ]);
   });
 });
 

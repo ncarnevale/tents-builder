@@ -34,14 +34,13 @@ function Grid({
 
   return (
     <div
-      className={`w-full flex flex-col items-center max-w-xl ${size === "large" ? "text-md md:text-xl" : "text-3xl md:text-4xl"} `}
+      className={`tb-print-surface w-full flex flex-col items-center max-w-xl ${size === "large" ? "text-md md:text-xl" : "text-3xl md:text-4xl"} `}
     >
       <div
         className="grid gap-1 w-full"
         style={{
           // Mirrored spacer column: balances the row-total gutter so the play area sits visually centered.
           gridTemplateColumns: `repeat(${width + 2}, minmax(0, 1fr))`,
-          
         }}
       >
         <Cell>{""}</Cell>
@@ -121,9 +120,12 @@ function GridCell({
       }}
       className={[
         "aspect-square w-full flex items-center justify-center rounded-sm border",
-        isClickable ? "cursor-pointer hover:bg-emerald-500/11" : "cursor-default",
+        isClickable
+          ? "cursor-pointer hover:bg-emerald-500/11"
+          : "cursor-default",
         isHighlighted && "bg-emerald-500/22",
-        isSoftHighlighted && "bg-emerald-500/10 ring-1 ring-inset ring-emerald-400/20",
+        isSoftHighlighted &&
+          "bg-emerald-500/10 ring-1 ring-inset ring-emerald-400/20",
         isDimmed && "opacity-[0.58] cursor-not-allowed",
       ]
         .filter(Boolean)

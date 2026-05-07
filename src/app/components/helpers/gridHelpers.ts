@@ -119,3 +119,10 @@ export function setGridCell(
   next[x][y] = val;
   return next;
 }
+
+export function gridWithOnlyTrees(grid: TypeGridState): TypeGridState {
+  const [width, height] = getGridDimensions(grid);
+  return Array.from({ length: height }, (_, x) =>
+    Array.from({ length: width }, (_, y) => (isTree(x, y, grid) ? "tree" : "")),
+  );
+}

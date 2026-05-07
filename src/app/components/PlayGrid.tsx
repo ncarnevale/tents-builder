@@ -8,7 +8,14 @@ import type { TypeCoordinates, TypeGridState } from "../types";
 import Grid from "./Grid";
 import GridToolBar from "./GridToolbar";
 import { useGridHistory } from "./hooks/useGridHistory";
-import { isTent, isTree, isBlank, isDot } from "./helpers/gridHelpers";
+import { usePrint } from "./hooks/usePrint";
+import {
+  gridWithOnlyTrees,
+  isTent,
+  isTree,
+  isBlank,
+  isDot,
+} from "./helpers/gridHelpers";
 
 type TypeGridProps = {
   width: number;
@@ -59,6 +66,8 @@ function initGrid(
 }
 
 function PlayGrid({ width, height, trees, tents }: TypeGridProps) {
+  const { print, isPrinting } = usePrint();
+
   const initialGrid = useMemo(
     () => initGrid(width, height, trees),
     [width, height, trees],
@@ -108,47 +117,56 @@ function PlayGrid({ width, height, trees, tents }: TypeGridProps) {
 
   return (
     <div className="max-w-xl flex flex-col items-center m-auto">
-      <GridToolBar gridWidth={width}>
-        <div className="flex justify-between w-full">
-          <div className="flex gap-2">
+      <div className="print:hidden w-full pr-4">
+        <GridToolBar gridWidth={width}>
+          <div className="flex justify-between w-full items-center gap-2">
+            <div className="flex gap-2">
+              <button
+                type="button"
+                className="btn-primary text-sm py-2 px-4"
+                onClick={() => undoHistory()}
+                title="Undo"
+                disabled={gridHistory.index <= 0}
+              >
+                <Undo2 size={16} />
+              </button>
+              <button
+                type="button"
+                className="btn-primary text-sm py-2 px-4"
+                onClick={() => redoHistory()}
+                title="Redo"
+                disabled={gridHistory.index + 1 >= gridHistory.history.length}
+              >
+                <Redo2 size={16} />
+              </button>
+              <button
+                type="button"
+                className="btn-primary text-sm py-2 px-4"
+                onClick={() => resetHistory()}
+                disabled={gridHistory.index <= 0}
+              >
+                Clear
+              </button>
+            </div>
             <button
               type="button"
-              className="btn-primary text-sm py-2 px-4"
-              onClick={() => undoHistory()}
-              title="Undo"
-              disabled={gridHistory.index <= 0}
+              className="btn-primary text-sm py-2 px-4 shrink-0"
+              onClick={() => print()}
             >
-              <Undo2 size={16} />
-            </button>
-            <button
-              type="button"
-              className="btn-primary text-sm py-2 px-4"
-              onClick={() => redoHistory()}
-              title="Redo"
-              disabled={gridHistory.index + 1 >= gridHistory.history.length}
-            >
-              <Redo2 size={16} />
+              Print
             </button>
           </div>
-          <button
-            type="button"
-            className="btn-primary text-sm py-2 px-4"
-            onClick={() => resetHistory()}
-            disabled={gridHistory.index <= 0}
-          >
-            Restart
-          </button>
-        </div>
-      </GridToolBar>
+        </GridToolBar>
+      </div>
       <Grid
-        grid={grid}
+        grid={isPrinting ? gridWithOnlyTrees(grid) : grid}
         colTotals={colTotals}
         rowTotals={rowTotals}
         onClickCell={toggleCell}
         isCellClickable={(_, __, cell) => cell !== "tree"}
       />
       {isWin && (
-        <div className="ml-10 mt-12 text-2xl font-bold text-tertiary saturate-250">
+        <div className="print:hidden ml-10 mt-12 text-2xl font-bold text-tertiary saturate-250">
           🎉 Nicely done! 🎉
         </div>
       )}
