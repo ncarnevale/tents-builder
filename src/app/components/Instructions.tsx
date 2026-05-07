@@ -1,22 +1,21 @@
 "use client";
 
-type TypeInstructionsProps = {
-  includeBuildInstructions?: boolean;
-};
+import { usePathname } from "next/navigation";
 
-function Instructions({
-  includeBuildInstructions = false,
-}: TypeInstructionsProps) {
+function Instructions() {
+  const pathname = usePathname();
+  const includeBuildInstructions = pathname.includes("build");
+
   return (
-    <div className="pl-4 pt-4 mt-4 text-md">
+    <div className="text-sm">
       <div className="mb-4">
         {includeBuildInstructions && (
           <div className="mb-4">
-            <b>Build Instructions:</b>
+            <div className="mb-2"><b>Build Instructions:</b></div>
             <BuildInstructions />
           </div>
         )}
-        <b>{`${includeBuildInstructions ? "Play " : ""} Instructions:`}</b>
+        <div className="mb-2"><b>{`${includeBuildInstructions ? "Play " : ""} Instructions:`}</b></div>
         <PlayInstructions />
       </div>
     </div>

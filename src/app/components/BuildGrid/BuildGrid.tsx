@@ -138,7 +138,7 @@ function BuildGrid({
   };
 
   return (
-    <div className="max-w-xl w-full flex flex-col items-center m-auto">
+    <div className="max-w-lg w-full flex flex-col items-center m-auto">
       <GridToolbar gridWidth={width}>
         <div className="flex justify-between items-center w-full">
           <div className="flex flex-1 gap-2">

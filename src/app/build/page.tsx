@@ -4,7 +4,6 @@ import dynamic from "next/dynamic";
 import { useState } from "react";
 import StartModal from "../components/StartModal";
 import { useRouter } from "next/navigation";
-import Instructions from "../components/Instructions";
 import PlaceHolderGrid from "../components/PlaceholderGrid";
 
 const BuildGrid = dynamic(() => import("../components/BuildGrid/BuildGrid"), {
@@ -46,7 +45,6 @@ function BuildPage() {
       ) : (
         <PlaceHolderGrid />
       )}
-      <Instructions includeBuildInstructions />
     </>
   );
 }

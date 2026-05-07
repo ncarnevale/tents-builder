@@ -7,6 +7,7 @@ import SideBar from "./components/SideBar";
 import NavTabs from "./components/NavTabs";
 import { ThemeRoot } from "./components/ThemeRoot";
 import { ThemeToggle } from "./components/ThemeToggle";
+import Instructions from "./components/Instructions";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -61,20 +62,18 @@ export default function RootLayout({
           <ThemeRoot>
             <main className="p-6">
               <div className="mb-8 flex items-center justify-between gap-4">
-                <h1 className="min-w-50 text-5xl font-extrabold">Tents</h1>
-                <div className="flex flex-1 justify-between items-center gap-2">
-                  <div />
-                  <NavTabs />
-                  <div className="ml-2">
-                    <ThemeToggle />
-                  </div>
+                <h1 className="flex-1 min-w-50 text-5xl font-extrabold">Tents</h1>
+                <div className="flex flex-1 justify-center"><NavTabs /></div>
+                <div className="flex flex-1 justify-end ml-2">
+                  <ThemeToggle />
                 </div>
               </div>
               <div className="flex flex-col md:flex-row">
-                <div className="order-last mt-4 border-t border-divider pt-4 pl-4 md:order-first md:mr-2 md:min-w-50 md:border-t-0 md:border-r md:pl-0">
+                <div className="order-last mt-4 border-t border-divider border-secondary/20 pt-4 pl-4 md:order-first md:mr-2 md:w-50 md:border-t-0 md:border-r md:pl-0">
                   <SideBar />
                 </div>
                 <div className="flex-1">{children}</div>
+                <div className="mt-4 border-t border-divider border-secondary/20 pt-4 pl-4 md:mr-2 md:w-50 md:border-t-0 md:border-l"><Instructions /></div>
               </div>
             </main>
           </ThemeRoot>

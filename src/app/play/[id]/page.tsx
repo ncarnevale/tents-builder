@@ -5,7 +5,6 @@ import PlayGrid from "@/app/components/PlayGrid";
 import { TypeGrid } from "@/app/types";
 import { useParams } from "next/navigation";
 import getGrid from "@/app/services/getGrid";
-import Instructions from "@/app/components/Instructions";
 import PlaceHolderGrid from "@/app/components/PlaceholderGrid";
 
 function PlayPage() {
@@ -33,7 +32,6 @@ function PlayPage() {
       ) : (
         <PlaceHolderGrid showLoader />
       )}
-      <Instructions />
     </>
   );
 }
