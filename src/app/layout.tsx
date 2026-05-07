@@ -60,7 +60,7 @@ export default function RootLayout({
             dangerouslySetInnerHTML={{ __html: themeInitScript }}
           />
           <ThemeRoot>
-            <main className="p-6">
+            <main className="p-6 pb-3 h-full flex flex-col">
               <div className="mb-8 flex items-center justify-between gap-4">
                 <h1 className="flex-1 min-w-50 text-5xl font-extrabold">
                   Tents
@@ -81,6 +81,14 @@ export default function RootLayout({
                   <Instructions />
                 </div>
               </div>
+              <p className="pb-4 md:pb-0 md:mt-8 flex justify-end print:hidden flex-1 items-end">
+                <a
+                  href="mailto:hello@tentsandtrees.cool"
+                  className="text-[11px] text-secondary/55 underline-offset-2 hover:text-secondary hover:underline"
+                >
+                  Contact me
+                </a>
+              </p>
             </main>
           </ThemeRoot>
         </body>
