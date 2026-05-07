@@ -65,14 +65,14 @@ export default function RootLayout({
                 <h1 className="flex-1 min-w-50 text-5xl font-extrabold">
                   Tents
                 </h1>
-                <div className="flex flex-1 justify-center">
+                <div className="flex flex-1 justify-end md:justify-center">
                   <NavTabs />
                 </div>
-                <div className="flex flex-1 justify-end">
+                <div className="hidden md:flex md:flex-1 md:justify-end">
                   <ThemeToggle />
                 </div>
               </div>
-              <div className="flex flex-col md:flex-row">
+              <div className="flex flex-col md:flex-row md:grow">
                 <div className="order-last mt-4 border-t border-divider border-secondary/20 pt-4 pl-4 md:order-first md:mr-2 md:w-50 md:border-t-0 md:border-r md:pl-0">
                   <SideBar />
                 </div>
@@ -81,7 +81,7 @@ export default function RootLayout({
                   <Instructions />
                 </div>
               </div>
-              <p className="pb-4 md:pb-0 md:mt-8 flex justify-end print:hidden flex-1 items-end">
+              <p className="pb-4 md:pb-0 md:mt-2 flex justify-end print:hidden flex-1 items-end">
                 <a
                   href="mailto:hello@tentsandtrees.cool"
                   className="text-[11px] text-secondary/55 underline-offset-2 hover:text-secondary hover:underline"
