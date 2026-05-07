@@ -143,12 +143,12 @@ function BuildGrid({
 
   return (
     <div className="max-w-lg w-full flex flex-col items-center m-auto">
-      <GridToolbar gridWidth={width}>
+      <GridToolbar gridWidth={width} className="mb-4">
         <div className="flex justify-between items-center w-full">
           <div className="flex flex-1 gap-2">
             <button
               type="button"
-              className="btn-primary text-sm py-2 px-4"
+              className="btn-primary text-sm py-1 px-4"
               onClick={() => undo()}
               title="Undo"
               disabled={gridHistory.index <= 0}
@@ -157,7 +157,7 @@ function BuildGrid({
             </button>
             <button
               type="button"
-              className="btn-primary text-sm py-2 px-4"
+              className="btn-primary text-sm py-1 px-4"
               onClick={() => redo()}
               title="Redo"
               disabled={gridHistory.index + 1 >= gridHistory.history.length}
@@ -166,7 +166,7 @@ function BuildGrid({
             </button>
             <button
               type="button"
-              className="btn-primary text-sm py-2 px-4"
+              className="btn-primary text-sm py-1 px-4"
               onClick={() => clear()}
               disabled={gridHistory.index <= 0}
             >
@@ -178,7 +178,7 @@ function BuildGrid({
           </div>
           <button
             type="button"
-            className="btn-primary flex-1 text-sm py-2 px-4"
+            className="btn-primary flex-1 text-sm py-1 px-4"
             onClick={() => onNewPuzzleClick()}
           >
             New Puzzle
@@ -199,7 +199,7 @@ function BuildGrid({
       <GridToolbar gridWidth={width}>
         <button
           type="button"
-          className="btn-primary w-full mt-6 text-lg py-2 my-2 px-4"
+          className="btn-primary w-full mt-4 text-lg py-1 px-4"
           disabled={next === "tent" || gridHistory.index === 0 || !!error}
           onClick={onSubmit}
         >

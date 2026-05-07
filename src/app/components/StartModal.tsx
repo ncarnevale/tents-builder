@@ -119,7 +119,7 @@ export function StartModal({
           type="button"
           onClick={handleOnConfirm}
           disabled={!width || !height}
-          className="btn-primary mt-2 p-2 text-sm"
+          className="btn-primary mt-2 py-1 px-2 text-sm"
         >
           Continue
         </button>

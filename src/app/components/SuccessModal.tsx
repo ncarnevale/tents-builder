@@ -56,7 +56,7 @@ export function SuccessModal({
           <button
             type="button"
             onClick={handleCopy}
-            className="btn-primary text-sm py-2 px-3 whitespace-nowrap"
+            className="btn-primary text-sm py-1 px-3 whitespace-nowrap"
           >
             {copied ? "Copied!" : "Copy"}
           </button>
@@ -66,14 +66,14 @@ export function SuccessModal({
         <button
           type="button"
           onClick={onPrint}
-          className="btn-primary text-sm py-2 px-3 mr-2 whitespace-nowrap"
+          className="btn-primary text-sm py-1 px-3 mr-2 whitespace-nowrap"
         >
           Print Puzzle
         </button>
         <button
           type="button"
           onClick={onClose}
-          className="btn-secondary text-sm py-2 px-4"
+          className="btn-secondary text-sm py-1 px-4"
         >
           Close
         </button>

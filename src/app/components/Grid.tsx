@@ -34,7 +34,7 @@ function Grid({
 
   return (
     <div
-      className={`tb-print-surface w-full flex flex-col items-center max-w-xl ${size === "large" ? "text-md md:text-xl" : "text-3xl md:text-4xl"} `}
+      className={`tb-print-surface w-full flex flex-col items-center max-w-xl ${size === "large" ? "text-md/0 md:text-xl/0" : "text-3xl md:text-4xl/0"} `}
     >
       <div
         className="grid gap-1 w-full"

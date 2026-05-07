@@ -118,12 +118,12 @@ function PlayGrid({ width, height, trees, tents }: TypeGridProps) {
   return (
     <div className="max-w-xl flex flex-col items-center m-auto">
       <div className="print:hidden w-full pr-4">
-        <GridToolBar gridWidth={width}>
+        <GridToolBar gridWidth={width} className="mb-4">
           <div className="flex justify-between w-full items-center gap-2">
             <div className="flex gap-2">
               <button
                 type="button"
-                className="btn-primary text-sm py-2 px-4"
+                className="btn-primary text-sm py-1 px-4"
                 onClick={() => undoHistory()}
                 title="Undo"
                 disabled={gridHistory.index <= 0}
@@ -132,7 +132,7 @@ function PlayGrid({ width, height, trees, tents }: TypeGridProps) {
               </button>
               <button
                 type="button"
-                className="btn-primary text-sm py-2 px-4"
+                className="btn-primary text-sm py-1 px-4"
                 onClick={() => redoHistory()}
                 title="Redo"
                 disabled={gridHistory.index + 1 >= gridHistory.history.length}
@@ -141,7 +141,7 @@ function PlayGrid({ width, height, trees, tents }: TypeGridProps) {
               </button>
               <button
                 type="button"
-                className="btn-primary text-sm py-2 px-4"
+                className="btn-primary text-sm py-1 px-4"
                 onClick={() => resetHistory()}
                 disabled={gridHistory.index <= 0}
               >
@@ -150,7 +150,7 @@ function PlayGrid({ width, height, trees, tents }: TypeGridProps) {
             </div>
             <button
               type="button"
-              className="btn-primary text-sm py-2 px-4 shrink-0"
+              className="btn-primary text-sm py-1 px-4 shrink-0"
               onClick={() => print()}
             >
               Print

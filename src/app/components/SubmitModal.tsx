@@ -85,14 +85,14 @@ export function SubmitModal({
         <button
           type="button"
           onClick={onCancel}
-          className="btn-secondary text-sm py-2 px-4"
+          className="btn-secondary text-sm py-1 px-4"
         >
           Cancel
         </button>
         <button
           type="button"
           onClick={handleSave}
-          className="btn-primary text-sm py-2 px-4"
+          className="btn-primary text-sm py-1 px-4"
         >
           Save
         </button>

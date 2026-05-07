@@ -33,21 +33,18 @@ function BuildGridStats({ grid }: TypeBuildGridStatsProps) {
   ] as const;
 
   return (
-      <div
-        role="status"
-        aria-label={ariaLabel}
-      >
-        <div className="flex flex-col items-center gap-x-4 gap-y-1.5 text-[13px] leading-snug tabular-nums tracking-normal">
-          {rows.map(({ label, value }) => (
-            <span key={label} className="inline-flex items-baseline gap-1">
-              <span className="text-[11px] font-medium text-secondary/65 sm:text-xs">
-                {label}:
-              </span>
-              <span className="text-secondary">{value}</span>
+    <div role="status" aria-label={ariaLabel}>
+      <div className="flex flex-col items-center gap-x-4 gap-y-0.5 text-xs/0 leading-snug tabular-nums tracking-normal">
+        {rows.map(({ label, value }) => (
+          <span key={label} className="inline-flex items-baseline gap-1">
+            <span className="text-[11px] font-medium text-secondary/65 sm:text-xs">
+              {label}:
             </span>
-          ))}
-        </div>
+            <span className="text-secondary">{value}</span>
+          </span>
+        ))}
       </div>
+    </div>
   );
 }
 
